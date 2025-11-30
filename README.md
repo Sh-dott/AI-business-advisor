@@ -5,39 +5,37 @@ A professional AI-powered technology recommendation system for businesses.
 ## 📁 Project Structure
 
 ```
-business-ai-advisor-refactored/
-├── frontend/                 # React Frontend Application
+ai-business-advisor/
+├── frontend/                           # React Frontend Application
 │   ├── src/
-│   │   ├── BusinessTechAdvisor.jsx    # Main component
+│   │   ├── BusinessTechAdvisor.jsx     # Main component (quiz + analysis)
+│   │   ├── App.js                      # React app wrapper
+│   │   ├── index.js                    # Entry point
+│   │   ├── index.css                   # Styling (CSS variables, responsive)
 │   │   ├── data/
-│   │   │   ├── technologies.js        # Tech database (30+ tools)
-│   │   │   └── questions.js           # Quiz questions
-│   │   ├── utils/
-│   │   │   └── analysis.js            # AI analysis engine
-│   │   ├── App.js
-│   │   ├── index.js
-│   │   └── index.css
+│   │   │   ├── technologies.js         # Tech database (10+ tools)
+│   │   │   └── questions.js            # Quiz questions (6 question sets)
+│   │   └── utils/
+│   │       └── analysis.js             # Scoring algorithm & analysis engine
 │   ├── public/
-│   │   ├── index.html                 # HTML template
-│   │   ├── favicon.ico
-│   │   └── manifest.json
-│   ├── build/                         # Production build
-│   │   └── index.html                 # ← OPEN THIS FILE
-│   ├── package.json
-│   └── README.md
+│   │   ├── index.html                  # HTML template
+│   │   └── manifest.json               # PWA manifest
+│   └── package.json                    # Dependencies & scripts
 │
-├── backend/                  # Backend API (Future)
-│   ├── models/               # Database models
-│   ├── routes/               # API endpoints
-│   ├── services/             # Business logic
-│   └── README.md
+├── backend/                            # Backend API (Future Development)
+│   ├── models/                         # Database schemas (placeholder)
+│   ├── routes/                         # API endpoints (placeholder)
+│   ├── services/                       # Business logic (placeholder)
+│   └── README.md                       # Backend documentation
 │
-├── docs/                     # Documentation
-│   ├── SETUP.md             # Installation guide
-│   ├── ARCHITECTURE.md      # System architecture
-│   └── API.md               # API documentation
+├── docs/                               # Documentation
+│   ├── SETUP.md                        # Installation & development guide
+│   ├── ARCHITECTURE.md                 # System design & data flow
+│   └── API.md                          # API endpoints (future backend)
 │
-└── README.md                # This file
+├── README.md                           # This file
+├── QUICKSTART.md                       # Quick start guide
+└── START_HERE.md                       # Getting started guide
 ```
 
 ## 🚀 Quick Start
