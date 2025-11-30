@@ -1,72 +1,90 @@
-# Business AI Advisor - Full Stack Application
+# AI Business Advisor - Production Ready
 
-A professional AI-powered technology recommendation system for businesses.
+A sophisticated full-stack AI-powered business technology consulting platform that uses Claude API and OpenAI GPT-4 to analyze business challenges and recommend tailored technology solutions.
 
 ## 📁 Project Structure
 
 ```
-ai-business-advisor/
-├── frontend/                           # React Frontend Application
+AI-business-advisor/
+├── backend/
+│   ├── config/          # Environment, database, AI providers
+│   ├── models/          # Mongoose schemas
+│   │   ├── User.js
+│   │   ├── Analysis.js
+│   │   ├── Technology.js
+│   │   └── ChatMessage.js
+│   ├── middleware/      # Auth, error handling
+│   ├── routes/          # API endpoints
+│   │   ├── auth.js
+│   │   └── analyze.js
+│   ├── services/        # Business logic
+│   │   ├── ai-service.js
+│   │   └── recommendation-engine.js
+│   ├── scripts/         # Database seeding
+│   │   └── seed-technologies.js
+│   ├── tests/           # Test suite
+│   │   └── api.test.js
+│   ├── server.js        # Express app
+│   └── package.json
+│
+├── frontend/
 │   ├── src/
-│   │   ├── BusinessTechAdvisor.jsx     # Main component (quiz + analysis)
-│   │   ├── App.js                      # React app wrapper
-│   │   ├── index.js                    # Entry point
-│   │   ├── index.css                   # Styling (CSS variables, responsive)
-│   │   ├── data/
-│   │   │   ├── technologies.js         # Tech database (10+ tools)
-│   │   │   └── questions.js            # Quiz questions (6 question sets)
-│   │   └── utils/
-│   │       └── analysis.js             # Scoring algorithm & analysis engine
-│   ├── public/
-│   │   ├── index.html                  # HTML template
-│   │   └── manifest.json               # PWA manifest
-│   └── package.json                    # Dependencies & scripts
+│   │   ├── components/  # React components (6 files + CSS)
+│   │   │   ├── AdvancedAdvisor.jsx/css
+│   │   │   ├── InitialInput.jsx/css
+│   │   │   ├── DiagnosisDisplay.jsx/css
+│   │   │   ├── ChatInterface.jsx/css
+│   │   │   ├── RecommendationCards.jsx/css
+│   │   │   └── AnalysisHistory.jsx/css
+│   │   ├── hooks/       # React hooks
+│   │   │   └── useAnalysis.js
+│   │   ├── services/    # API client
+│   │   │   └── api.js
+│   │   └── index.jsx
+│   └── package.json
 │
-├── backend/                            # Backend API (Future Development)
-│   ├── models/                         # Database schemas (placeholder)
-│   ├── routes/                         # API endpoints (placeholder)
-│   ├── services/                       # Business logic (placeholder)
-│   └── README.md                       # Backend documentation
-│
-├── docs/                               # Documentation
-│   ├── SETUP.md                        # Installation & development guide
-│   ├── ARCHITECTURE.md                 # System design & data flow
-│   └── API.md                          # API endpoints (future backend)
-│
-├── README.md                           # This file
-├── QUICKSTART.md                       # Quick start guide
-└── START_HERE.md                       # Getting started guide
+├── SYSTEM_OVERVIEW.md   # Architecture & technical details
+├── DEPLOYMENT.md        # Deployment guide
+└── README.md           # This file
 ```
 
 ## 🚀 Quick Start
 
-### Open Website Locally (No Setup Needed!)
-
-Simply **double-click** this file:
-```
-frontend/build/index.html
-```
-
-The website will open in your browser with full functionality!
-
----
-
-## 💻 Development (Optional)
-
-If you want to modify the code and test changes:
-
 ### Prerequisites
-- Node.js 14+ installed
-- npm or yarn
+- Node.js 18+ and npm 8+
+- MongoDB Atlas account
+- Claude API key (https://console.anthropic.com)
+- OpenAI API key (https://platform.openai.com)
 
-### Setup
+### Installation (5 minutes)
+
+**1. Clone Repository**
 ```bash
-cd frontend
-npm install
-npm start
+git clone https://github.com/Sh-dott/AI-business-advisor.git
+cd AI-business-advisor
 ```
 
-The app will open at `http://localhost:3000` with hot-reload enabled.
+**2. Backend Setup**
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Edit .env with your API keys
+npm run seed        # Populate 50+ technologies
+npm run dev         # Start server on port 5000
+```
+
+**3. Frontend Setup**
+```bash
+cd ../frontend
+npm install
+npm start          # Start on port 3000
+```
+
+**4. Access Application**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
+- Health check: http://localhost:5000/health
 
 ---
 
