@@ -9,6 +9,7 @@ const { errorHandler } = require('./middleware/error-handler');
 // Import routes
 const authRoutes = require('./routes/auth');
 const analyzeRoutes = require('./routes/analyze');
+const exportRoutes = require('./routes/export');
 
 // Initialize app
 const app = express();
@@ -55,6 +56,9 @@ app.use('/api/auth', authRoutes);
 
 // Analysis routes
 app.use('/api/analyze', analyzeRoutes);
+
+// Export routes (document generation)
+app.use('/api/export', exportRoutes);
 
 // Analytics routes (placeholder)
 app.get('/api/health/status', (req, res) => {

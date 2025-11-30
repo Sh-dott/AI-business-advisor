@@ -24,21 +24,24 @@
   "author": "Shai",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^7.5.0",
-    "cors": "^2.8.5",
-    "helmet": "^7.0.0",
-    "dotenv": "^16.3.1",
-    "bcrypt": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
     "axios": "^1.5.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "docx": "^9.5.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "pdf-lib": "^1.17.1",
+    "sharp": "^0.34.5",
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
+    "eslint": "^8.50.0",
     "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "eslint": "^8.50.0"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
