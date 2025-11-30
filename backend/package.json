@@ -1,0 +1,39 @@
+{
+  "name": "ai-business-advisor-backend",
+  "version": "1.0.0",
+  "description": "Backend API for AI Business Advisor with Claude/OpenAI integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node scripts/seed-technologies.js"
+  },
+  "keywords": [
+    "ai",
+    "business",
+    "advisor",
+    "claude",
+    "openai",
+    "recommendations"
+  ],
+  "author": "Shai",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "dotenv": "^16.3.1",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.5.0",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

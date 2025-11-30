@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/AI-business-advisor/static/css/main.9bfba86c.css",
+    "main.js": "/AI-business-advisor/static/js/main.46d9ee65.js",
+    "index.html": "/AI-business-advisor/index.html",
+    "main.9bfba86c.css.map": "/AI-business-advisor/static/css/main.9bfba86c.css.map",
+    "main.46d9ee65.js.map": "/AI-business-advisor/static/js/main.46d9ee65.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9bfba86c.css",
+    "static/js/main.46d9ee65.js"
+  ]
+}
