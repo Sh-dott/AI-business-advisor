@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node scripts/seed-technologies.js"
+    "seed": "node scripts/seed-technologies.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:api": "jest tests/api.test.js",
+    "lint": "eslint .",
+    "build": "echo 'Node.js backend - no build needed'"
   },
   "keywords": [
     "ai",
@@ -30,7 +35,20 @@
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.50.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!node_modules/**",
+      "!coverage/**",
+      "!tests/**"
+    ]
   },
   "engines": {
     "node": ">=16.0.0",
