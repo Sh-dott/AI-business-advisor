@@ -44,7 +44,7 @@ module.exports = {
   // OpenAI API
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_API_URL: 'https://api.openai.com/v1',
-  OPENAI_MODEL: 'gpt-4-turbo',
+  OPENAI_MODEL: 'gpt-4o-mini',  // Changed from gpt-4-turbo - available and cost-effective
   OPENAI_MAX_TOKENS: 2048,
 
   // Streaming

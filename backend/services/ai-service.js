@@ -29,6 +29,7 @@ class AIService {
 
   /**
    * Perform initial AI diagnosis of business
+   * Automatically handles provider fallback
    */
   async performDiagnosis(businessDescription, apiProvider = 'claude') {
     try {
@@ -53,7 +54,19 @@ class AIService {
         usage: response.usage
       };
     } catch (error) {
-      console.error('AI Diagnosis Error:', error);
+      console.error(`❌ ${apiProvider} provider failed:`, error.message);
+
+      // If OpenAI failed and it was primary provider, try Claude fallback
+      if (apiProvider === 'openai' && !error.message.includes('quota')) {
+        console.log('⚠️  Attempting fallback to Claude...');
+        try {
+          return await this.performDiagnosis(businessDescription, 'claude');
+        } catch (fallbackError) {
+          console.error('Claude fallback also failed:', fallbackError.message);
+          throw new Error(`AI Service Error: Both providers failed. ${error.message}`);
+        }
+      }
+
       throw new Error(`AI Service Error: ${error.message}`);
     }
   }
