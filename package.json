@@ -1,0 +1,24 @@
+{
+  "name": "ai-business-advisor",
+  "version": "1.0.0",
+  "description": "AI-powered business technology advisor with document generation",
+  "main": "backend/server.js",
+  "scripts": {
+    "install": "cd backend && npm install",
+    "start": "node backend/server.js",
+    "dev": "cd backend && npm run dev",
+    "build": "cd backend && npm install"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "keywords": [
+    "ai",
+    "business",
+    "advisor",
+    "technology",
+    "recommendations"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
