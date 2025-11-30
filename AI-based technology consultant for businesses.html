@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Tech Advisor - AI Technology Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #2d5a8c;
+            --accent: #00d4ff;
+            --light-bg: #f8fafb;
+            --card-bg: #ffffff;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            direction: rtl;
+            color: var(--text-dark);
+        }
+
+        /* SVG Background */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin: 60px 0 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            margin: 40px auto;
+            max-width: 700px;
+            animation: fadeIn 0.6s ease-in;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-bottom: 30px;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Options Grid */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .option {
+            padding: 18px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: right;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: right 0.6s ease;
+        }
+
+        .option:hover {
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+            transform: translateX(-3px);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.02), rgba(0, 212, 255, 0.02));
+        }
+
+        .option:hover::before {
+            right: 100%;
+        }
+
+        .option.selected {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(0, 212, 255, 0.08));
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+            position: relative;
+        }
+
+        .option.selected::after {
+            content: '✓';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Textarea */
+        .textarea-section {
+            margin-bottom: 32px;
+        }
+
+        .textarea-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text-dark);
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            direction: rtl;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.15);
+        }
+
+        textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(30, 58, 95, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-bg);
+            transform: translateY(-2px);
+        }
+
+        /* Results */
+        .results-header {
+            text-align: center;
+            margin: 60px 0 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+            animation: fadeIn 0.6s ease-in 0.2s both;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(99, 102, 241, 0.03) 100%);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .recommendation-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px rgba(99, 102, 241, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .recommendation-card:hover::before {
+            opacity: 1;
+        }
+
+        .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .rec-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .priority-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .priority-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .rec-category {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .rec-description {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .factors {
+            list-style: none;
+            margin: 16px 0;
+            flex: 1;
+        }
+
+        .factors li {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .factors li:before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .rec-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rec-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+        }
+
+        .rec-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-light);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Step by step */
+        .step-list {
+            margin: 24px 0;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+        }
+
+        .step-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .step-content p {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Fade animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .api-input-group {
+            margin-bottom: 20px;
+        }
+
+        .api-input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.15);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-close {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        .modal-btn-close:hover {
+            background: #cbd5e0;
+        }
+
+        .modal-btn-submit {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .modal-btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .api-info {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #4f46e5;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Modern Background -->
+    <div class="bg-container">
+        <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Gradient definitions -->
+                <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#1e293b;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#0f2438;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.2" />
+                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.1" />
+                </linearGradient>
+                <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.15" />
+                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+                </radialGradient>
+            </defs>
+
+            <!-- Main gradient background -->
+            <rect width="1200" height="800" fill="url(#mainGradient)"/>
+
+            <!-- Accent overlay -->
+            <rect width="1200" height="800" fill="url(#accentGradient)"/>
+
+            <!-- Top-left accent glow -->
+            <circle cx="100" cy="100" r="300" fill="url(#glowGradient)"/>
+
+            <!-- Bottom-right accent glow -->
+            <circle cx="1100" cy="700" r="350" fill="url(#glowGradient)"/>
+
+            <!-- Geometric shapes - hexagons and lines -->
+            <!-- Top left hexagon grid -->
+            <g stroke="#00d4ff" stroke-width="1.5" fill="none" opacity="0.15">
+                <!-- Hexagon 1 -->
+                <path d="M 80,150 L 130,120 L 180,150 L 180,210 L 130,240 L 80,210 Z"/>
+                <!-- Hexagon 2 -->
+                <path d="M 200,100 L 250,70 L 300,100 L 300,160 L 250,190 L 200,160 Z"/>
+                <!-- Hexagon 3 -->
+                <path d="M 140,250 L 190,220 L 240,250 L 240,310 L 190,340 L 140,310 Z"/>
+            </g>
+
+            <!-- Bottom right hexagon grid -->
+            <g stroke="#00d4ff" stroke-width="1.5" fill="none" opacity="0.15">
+                <!-- Hexagon 4 -->
+                <path d="M 1000,650 L 1050,620 L 1100,650 L 1100,710 L 1050,740 L 1000,710 Z"/>
+                <!-- Hexagon 5 -->
+                <path d="M 1120,700 L 1170,670 L 1220,700 L 1220,760 L 1170,790 L 1120,760 Z"/>
+            </g>
+
+            <!-- Vertical lines (tech/data flow) -->
+            <g stroke="#00d4ff" stroke-width="2" opacity="0.12">
+                <line x1="300" y1="0" x2="300" y2="800" stroke-dasharray="10,20"/>
+                <line x1="600" y1="0" x2="600" y2="800" stroke-dasharray="15,25"/>
+                <line x1="900" y1="0" x2="900" y2="800" stroke-dasharray="10,20"/>
+            </g>
+
+            <!-- Horizontal lines -->
+            <g stroke="#6366f1" stroke-width="1.5" opacity="0.08">
+                <line x1="0" y1="200" x2="1200" y2="200" stroke-dasharray="20,30"/>
+                <line x1="0" y1="400" x2="1200" y2="400" stroke-dasharray="25,35"/>
+                <line x1="0" y1="600" x2="1200" y2="600" stroke-dasharray="20,30"/>
+            </g>
+
+            <!-- Diagonal accent lines -->
+            <g stroke="#00d4ff" stroke-width="2" opacity="0.1">
+                <line x1="0" y1="0" x2="400" y2="400"/>
+                <line x1="800" y1="0" x2="1200" y2="400"/>
+                <line x1="0" y1="400" x2="600" y2="800"/>
+                <line x1="600" y1="0" x2="1200" y2="600"/>
+            </g>
+
+            <!-- Tech icons (subtle) -->
+            <!-- Circuit board pattern top right -->
+            <g opacity="0.12">
+                <circle cx="1050" cy="100" r="3" fill="#00d4ff"/>
+                <circle cx="1100" cy="80" r="3" fill="#00d4ff"/>
+                <circle cx="1100" cy="130" r="3" fill="#00d4ff"/>
+                <line x1="1050" y1="100" x2="1100" y2="80" stroke="#00d4ff" stroke-width="1"/>
+                <line x1="1050" y1="100" x2="1100" y2="130" stroke="#00d4ff" stroke-width="1"/>
+            </g>
+
+            <!-- Data nodes bottom left -->
+            <g opacity="0.1">
+                <circle cx="150" cy="700" r="4" fill="#6366f1"/>
+                <circle cx="200" cy="680" r="4" fill="#6366f1"/>
+                <circle cx="180" cy="750" r="4" fill="#6366f1"/>
+                <line x1="150" y1="700" x2="200" y2="680" stroke="#6366f1" stroke-width="1.5"/>
+                <line x1="150" y1="700" x2="180" y2="750" stroke="#6366f1" stroke-width="1.5"/>
+                <line x1="200" y1="680" x2="180" y2="750" stroke="#6366f1" stroke-width="1.5"/>
+            </g>
+
+            <!-- Center accent circles -->
+            <g opacity="0.08">
+                <circle cx="600" cy="400" r="100" fill="none" stroke="#00d4ff" stroke-width="1"/>
+                <circle cx="600" cy="400" r="150" fill="none" stroke="#6366f1" stroke-width="1"/>
+                <circle cx="600" cy="400" r="200" fill="none" stroke="#00d4ff" stroke-width="0.5"/>
+            </g>
+        </svg>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+        // API Configuration
+        const CLAUDE_API_KEY = ""; // User will add this later
+        let useClaudeAPI = false;
+
+        // Technology Database
+        const technologies = {
+            hubspot_free: {
+                name: 'HubSpot CRM Free',
+                category: 'CRM & Customer Management',
+                pricing: 'חינם',
+                setup: '1-2 שעות',
+                complexity: 'נמוכה',
+                description: 'מערכת ניהול לקוחות חינמית וחזקה עם תכונות בסיסיות',
+                best_for: ['services', 'health', 'retail'],
+                factors: ['100% חינמי לעולם', 'קל ללמידה', 'אינטגרציה עם Gmail'],
+                link: 'https://hubspot.com',
+                steps: ['הרשמה חינמית לחשבון HubSpot', 'הוספת כל אנשי הקשר שלך', 'הגדרת תהליכי המכירות שלך', 'התחלת מעקב אחרי עסקאות']
+            },
+            hubspot_starter: {
+                name: 'HubSpot CRM Starter',
+                category: 'CRM & Customer Management',
+                pricing: '180 ש"ח/חודש',
+                setup: '4-8 שעות',
+                complexity: 'בינונית',
+                description: 'מערכת CRM מתקדמת עם אוטומציה וכלים שיווקיים',
+                best_for: ['services', 'retail'],
+                factors: ['יחס מחיר-ביצועים מעולה', 'תמיכה 24/7', 'אינטגרציות רבות'],
+                link: 'https://hubspot.com/pricing/crm',
+                steps: ['רישום ל-Starter Plan', 'יבוא נתוני לקוחות קיימים', 'הגדרת זרימות אוטומציה', 'הכשרת הצוות שלך']
+            },
+            pipedrive: {
+                name: 'Pipedrive',
+                category: 'CRM & Customer Management',
+                pricing: '59 ש"ח/חודש',
+                setup: '2-4 שעות',
+                complexity: 'נמוכה',
+                description: 'CRM ממוקד מכירות עם ממשק ויזואלי וידידותי',
+                best_for: ['retail', 'services'],
+                factors: ['פשוט וידידותי', 'התמחות במכירות', 'מחיר נגיש'],
+                link: 'https://pipedrive.com',
+                steps: ['צור חשבון Pipedrive', 'כנס את שלבי המכירות שלך', 'הוסף את הצוות שלך', 'התחל לנהל עסקאות']
+            },
+            shopify: {
+                name: 'Shopify',
+                category: 'E-commerce',
+                pricing: '116 ש"ח/חודש',
+                setup: '1-2 ימים',
+                complexity: 'נמוכה',
+                description: 'פלטפורמת e-commerce מובילה לפתיחת חנות אונליין',
+                best_for: ['retail'],
+                factors: ['הקמה מהירה', 'תמיכה מעולה', 'תבניות יפות'],
+                link: 'https://shopify.com',
+                steps: ['בחר תיכנית Shopify', 'בחר תבנית עיצוב', 'הוסף מוצרים', 'הגדר תשלומים ומשלוחים']
+            },
+            calendly: {
+                name: 'Calendly',
+                category: 'Scheduling',
+                pricing: 'חינם / 39 ש"ח',
+                setup: '30 דקות',
+                complexity: 'נמוכה',
+                description: 'תיאום פגישות אוטומטי וחינם',
+                best_for: ['services', 'health'],
+                factors: ['תיאום פגישות אוטומטי', 'אינטגרציה לוח שנה', 'קל מאוד'],
+                link: 'https://calendly.com',
+                steps: ['הרשם ל-Calendly', 'חבר את לוח השנה שלך', 'הגדר זמנים זמינים', 'שתף את הקישור שלך']
+            },
+            mailchimp: {
+                name: 'Mailchimp',
+                category: 'Marketing',
+                pricing: 'חינם / 39 ש"ח',
+                setup: '2-6 שעות',
+                complexity: 'בינונית',
+                description: 'אימייל מרקטינג ואוטומציה למכירות',
+                best_for: ['retail', 'services'],
+                factors: ['אימייל מרקטינג מתקדם', 'אוטומציה', 'דוחות מפורטים'],
+                link: 'https://mailchimp.com',
+                steps: ['הרשם ל-Mailchimp', 'יבוא רשימת המייל שלך', 'עיצוב תבלטים', 'התחלת קמפיינים']
+            },
+            wix: {
+                name: 'Wix',
+                category: 'Website Builder',
+                pricing: 'חינם / 68 ש"ח',
+                setup: '1-3 שעות',
+                complexity: 'נמוכה',
+                description: 'בניית אתרים עם AI וללא צורך בקוד',
+                best_for: ['services', 'restaurant', 'health'],
+                factors: ['בניית אתר אוטומטית', 'קל מאוד', 'עיצוב AI'],
+                link: 'https://wix.com',
+                steps: ['בחר תיכנית Wix', 'בחר עיצוב', 'הוסף את הקונטנט שלך', 'פרסם את האתר']
+            },
+            stripe: {
+                name: 'Stripe',
+                category: 'Payments',
+                pricing: '2.9% לעסקה',
+                setup: '2-8 שעות',
+                complexity: 'בינונית',
+                description: 'תשלומים מתקדמים וממשקים API',
+                best_for: ['retail', 'services'],
+                factors: ['תשלומים מתקדמים', 'אבטחה גבוהה', 'API חזק'],
+                link: 'https://stripe.com',
+                steps: ['הרשם ל-Stripe', 'אמת את חשבונך', 'קבל את פרטי ה-API', 'שלב בחנות שלך']
+            },
+            notion: {
+                name: 'Notion',
+                category: 'Management & Productivity',
+                pricing: 'חינם / 39 ש"ח',
+                setup: '3-10 ימים',
+                complexity: 'בינונית',
+                description: 'מרחב עבודה הכל-במקום-אחד לניהול העסק',
+                best_for: ['services', 'health'],
+                factors: ['גמישות מלאה', 'עלות נמוכה', 'שיתוף פעולה'],
+                link: 'https://notion.so',
+                steps: ['הרשם ל-Notion', 'בחר תבלטים', 'הגדר מסדי נתונים', 'שתף עם הצוות']
+            },
+            google_analytics: {
+                name: 'Google Analytics 4',
+                category: 'Analytics',
+                pricing: 'חינם',
+                setup: '1-2 שעות',
+                complexity: 'בינונית',
+                description: 'ניתוח מפורט של ביצועי אתר ומשתמשים',
+                best_for: ['retail', 'services'],
+                factors: ['ניתוח מלא', 'אינטגרציה Google', 'חינמי ומתקדם'],
+                link: 'https://analytics.google.com',
+                steps: ['הרשם ל-Google Analytics', 'הוסף את הקוד לאתר', 'הגדר קונברסיות', 'בדוק את הדוחות']
+            }
+        };
+
+        // State
+        let currentStep = 0;
+        let answers = {};
+        let analysisResults = null;
+
+        // Questions - Comprehensive with Realistic Business Options
+        const questions = [
+            {
+                id: 'business',
+                text: 'איזה סוג עסק יש לך?',
+                subtitle: 'בחר את הסוג שהכי קרוב לעסקך',
+                type: 'multiple',
+                options: [
+                    { value: 'retail', label: '🛍️ חנות / מכירה אונליין', desc: 'מוצרים פיזיים או דיגיטליים' },
+                    { value: 'services', label: '💼 שירותים מקצועיים', desc: 'ייעוץ, עיצוב, שיווק, תוכנה' },
+                    { value: 'restaurant', label: '🍽️ מסעדה / קפה / דליברי', desc: 'מזון, משקאות, תפעול' },
+                    { value: 'health', label: '⚕️ בריאות / יופי / כושר', desc: 'קליניקה, ספא, גיים, פסיכולוג' },
+                    { value: 'freelance', label: '👨‍💻 עצמאי / סוכן עבודה', desc: 'ייעוץ, כתיבה, עיצוב, פרוגרמציה' },
+                    { value: 'manufacturing', label: '🏭 ייצור / מלאכה', desc: 'מוצרים בעבודת יד, ייצור קטן' },
+                    { value: 'education', label: '📚 חינוך / הדרכה', desc: 'קורסים, שיעורים, הכשרה' },
+                    { value: 'nonprofit', label: '❤️ ארגון חברתי / תמיכה', desc: 'NGO, מוקדים, התנדבות' }
+                ]
+            },
+            {
+                id: 'challenge',
+                text: 'מה הבעיה הגדולה ביותר שלך?',
+                subtitle: 'בחר את 1-2 בעיות המרכזיות',
+                type: 'multiple',
+                options: [
+                    { value: 'customers', label: '👥 משיכת לקוחות חדשים', desc: 'קשה לי למצוא ולהשיג לקוחות חדשים' },
+                    { value: 'retention', label: '🔄 שמירה על לקוחות קיימים', desc: 'לקוחות לא חוזרים שוב' },
+                    { value: 'cashflow', label: '💸 בעיות תזרים מזומנים', desc: 'קושי בקבלת תשלומים בזמן' },
+                    { value: 'time_management', label: '⏰ בזבוז זמן בעבודה ידנית', desc: 'יותר מדי עבודה ידנית שלא מייצרת רווח' },
+                    { value: 'inventory', label: '📦 ניהול מלאי/הזמנות', desc: 'קשה לנהל מלאי או הזמנות' },
+                    { value: 'communication', label: '💬 תקשורת עם לקוחות', desc: 'קשה לתקשר עם לקוחות בזמן' },
+                    { value: 'team_management', label: '👔 ניהול צוות', desc: 'קושי בתיאום וניהול עובדים' },
+                    { value: 'data_tracking', label: '📊 ניהול נתונים וביצועים', desc: 'אין לי ראות מובהקת של הנתונים' },
+                    { value: 'online_presence', label: '🌐 נוכחות דיגיטלית', desc: 'אין אתר, מדיה חברתית או נוכחות אונליין' },
+                    { value: 'compliance', label: '⚖️ ציות חוקי/ניהול מסמכים', desc: 'קושי בניהול מסמכים וציות' }
+                ]
+            },
+            {
+                id: 'budget',
+                text: 'מה התקציב החודשי שלך?',
+                subtitle: 'בחר את הטווח הרלוונטי',
+                type: 'multiple',
+                options: [
+                    { value: 'free', label: '🆓 חינם לחלוטין', desc: '0 ש"ח - אני צריך רק כלים בחינם' },
+                    { value: 'low', label: '💰 קטן מאוד', desc: '50-150 ש"ח / חודש' },
+                    { value: 'medium_low', label: '💵 קטן', desc: '150-500 ש"ח / חודש' },
+                    { value: 'medium', label: '💴 בינוני', desc: '500-1,500 ש"ח / חודש' },
+                    { value: 'medium_high', label: '💶 גבוה יחסית', desc: '1,500-5,000 ש"ח / חודש' },
+                    { value: 'high', label: '💷 גבוה מאוד', desc: '5,000+ ש"ח / חודש' }
+                ]
+            },
+            {
+                id: 'team_size',
+                text: 'כמה אנשים בצוות שלך?',
+                subtitle: 'כולל את עצמך',
+                type: 'multiple',
+                options: [
+                    { value: 'solo', label: '👤 עצמאי', desc: 'רק אני - עסק קטן מאוד' },
+                    { value: 'small', label: '👥 קטן', desc: '2-5 עובדים' },
+                    { value: 'medium', label: '👨‍💼 בינוני', desc: '6-20 עובדים' },
+                    { value: 'large', label: '👨‍💼👨‍💼 גדול', desc: '20+ עובדים' }
+                ]
+            },
+            {
+                id: 'tech_level',
+                text: 'מה רמת ההיכרות שלך עם טכנולוגיה?',
+                subtitle: 'כמה קל לך ללמוד כלים חדשים',
+                type: 'multiple',
+                options: [
+                    { value: 'no_tech', label: '🙈 ללא ידע טכנולוגי', desc: 'אני עדיין מעדיף ככל הניתן לא להשתמש בטכנולוגיה' },
+                    { value: 'basic', label: '📱 בסיסי', desc: 'אני משתמש בטלפון וברשתות חברתיות' },
+                    { value: 'intermediate', label: '💻 בינוני', desc: 'אני משתמש בדוא"ל, אקסל, ובסיס נתונים' },
+                    { value: 'advanced', label: '🚀 מתקדם', desc: 'אני בקיא בטכנולוגיה ותוכנות' }
+                ]
+            },
+            {
+                id: 'description',
+                text: '📝 ספר לנו בפירוט על עסקך',
+                subtitle: 'תיאור מפורט יעזור ל-AI לתת לך ניתוח אישי מדוייק',
+                type: 'textarea',
+                placeholder: 'לדוגמה: אני מנהל חנות בגדים קטנה עם 2 עובדים בתל אביב. אני משקיע הרבה זמן בניהול הזמנות, עדכון לקוחות ודוא"ל. רוצה לאוטומט תהליכים, להגביר מכירות דרך הרשתות החברתיות, ולחסוך זמן על ניהול מלאי.'
+            }
+        ];
+
+        // Render Quiz Step
+        function renderQuizStep() {
+            const q = questions[currentStep];
+            const root = document.getElementById('root');
+            const progress = ((currentStep + 1) / questions.length) * 100;
+
+            let optionsHTML = '';
+
+            if (q.type === 'multiple') {
+                optionsHTML = `
+                    <div class="options">
+                        ${q.options.map(opt => `
+                            <div class="option ${answers[q.id] === opt.value ? 'selected' : ''}"
+                                 onclick="selectAnswer('${q.id}', '${opt.value}')">
+                                <div class="option-title">${opt.label}</div>
+                                <div class="option-desc">${opt.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (q.type === 'textarea') {
+                optionsHTML = `
+                    <div class="textarea-section">
+                        <label class="textarea-label">${q.text}</label>
+                        <textarea id="text-input" placeholder="${q.placeholder}">${answers[q.id] || ''}</textarea>
+                    </div>
+                `;
+            }
+
+            root.innerHTML = `
+                <div class="container">
+                    <div class="card fade-in-up">
+                        <div class="progress-section">
+                            <div class="progress-text">שלב ${currentStep + 1} מתוך ${questions.length}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <h2>${q.text}</h2>
+                        <p class="subtitle">${q.subtitle}</p>
+                        ${optionsHTML}
+                        <div class="button-group">
+                            ${currentStep > 0 ? `<button class="btn-secondary" onclick="previousQuestion()">← חזור</button>` : ''}
+                            <button class="btn-primary" onclick="nextQuestion()"
+                                    ${!answers[q.id] ? 'disabled' : ''}>
+                                ${currentStep === questions.length - 1 ? 'קבל המלצות ➜' : 'הבא ➜'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Focus textarea if present
+            if (q.type === 'textarea') {
+                setTimeout(() => {
+                    const textarea = document.getElementById('text-input');
+                    if (textarea) textarea.focus();
+                }, 100);
+            }
+        }
+
+        // Render Results
+        function renderResults(recs) {
+            const root = document.getElementById('root');
+
+            root.innerHTML = `
+                <div class="container">
+                    <div class="results-header fade-in-up">
+                        <h1>🎯 המלצות טכנולוגיות עבורך</h1>
+                        <p class="subtitle">בהתאם לתשובותיך, הנה 4 הפתרונות הטובים ביותר להעלאת העסק שלך</p>
+                    </div>
+
+                    <div class="results-grid">
+                        ${recs.map((rec, idx) => `
+                            <div class="recommendation-card fade-in-up">
+                                <div class="rec-header">
+                                    <div>
+                                        <div class="rec-title">${rec.name}</div>
+                                        <div class="rec-category">${rec.category}</div>
+                                    </div>
+                                    <div class="priority-badge">${rec.priority}</div>
+                                </div>
+
+                                <p class="rec-description">${rec.description}</p>
+
+                                <ul class="factors">
+                                    ${rec.factors.map(f => `<li>${f}</li>`).join('')}
+                                </ul>
+
+                                <div class="step-list" style="background: var(--light-bg); padding: 16px; border-radius: 12px; margin: 16px 0;">
+                                    <div style="font-weight: 600; color: var(--primary); margin-bottom: 12px;">📋 תוכנית יישום:</div>
+                                    ${rec.steps.map((step, i) => `
+                                        <div class="step-item">
+                                            <div class="step-number">${i + 1}</div>
+                                            <div class="step-content">
+                                                <p>${step}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+
+                                <div class="rec-meta">
+                                    <div class="meta-item">
+                                        <span>💰</span>
+                                        <span>${rec.pricing}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>⏱️</span>
+                                        <span>${rec.setup}</span>
+                                    </div>
+                                    <div class="meta-item" style="grid-column: 1 / -1;">
+                                        <span>📊</span>
+                                        <span>מורכבות: ${rec.complexity}</span>
+                                    </div>
+                                </div>
+
+                                <a href="${rec.link}" target="_blank" class="rec-link">בקר באתר ➜</a>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="text-align: center; margin: 60px 0;">
+                        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="openAPIModal()" style="padding: 14px 32px; font-size: 16px; background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                                🤖 שדרג עם Claude/ChatGPT
+                            </button>
+                            <button class="btn-primary" onclick="resetQuiz()" style="padding: 14px 32px; font-size: 16px;">
+                                ← התחל מחדש
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Analyze - Comprehensive matching based on all new questions
+        function analyzeAnswers() {
+            const categoryMap = {
+                'customers': ['CRM & Customer Management', 'Marketing'],
+                'retention': ['CRM & Customer Management', 'Marketing'],
+                'cashflow': ['Payments', 'Management & Productivity'],
+                'time_management': ['Management & Productivity', 'CRM & Customer Management'],
+                'inventory': ['Management & Productivity'],
+                'communication': ['CRM & Customer Management', 'Management & Productivity'],
+                'team_management': ['Management & Productivity'],
+                'data_tracking': ['Analytics', 'Management & Productivity'],
+                'online_presence': ['Website Builder', 'E-commerce', 'Marketing'],
+                'compliance': ['Management & Productivity'],
+                'org': ['Management & Productivity'],
+                'payments': ['Payments'],
+                'online': ['Website Builder', 'E-commerce'],
+                'time': ['Management & Productivity']
+            };
+
+            const relevantCategories = categoryMap[answers.challenge] || [];
+            const recs = [];
+
+            for (let [key, tech] of Object.entries(technologies)) {
+                let score = 0;
+
+                // Business type match (30 points)
+                if (tech.best_for?.includes(answers.business)) score += 30;
+
+                // Challenge/Category match (40 points)
+                if (relevantCategories.includes(tech.category)) score += 40;
+
+                // Budget match (25 points)
+                if (answers.budget === 'free' && tech.pricing.includes('חינם')) score += 25;
+                if (answers.budget === 'low' && parseInt(tech.pricing) < 150) score += 25;
+                if (answers.budget === 'medium_low' && parseInt(tech.pricing) < 500) score += 25;
+                if (answers.budget === 'medium' && parseInt(tech.pricing) < 1500) score += 25;
+                if (answers.budget === 'medium_high' && parseInt(tech.pricing) < 5000) score += 25;
+                if (answers.budget === 'high') score += 25;
+
+                // Team size match (15 points)
+                if (answers.team_size === 'solo' && !tech.category.includes('Enterprise')) score += 15;
+                if (answers.team_size === 'small') score += 15;
+                if (answers.team_size === 'medium') score += 15;
+                if (answers.team_size === 'large') score += 15;
+
+                // Tech level match (15 points)
+                if (answers.tech_level === 'no_tech' && tech.complexity === 'נמוכה') score += 15;
+                if (answers.tech_level === 'basic' && ['נמוכה', 'בינונית'].includes(tech.complexity)) score += 15;
+                if (answers.tech_level === 'intermediate') score += 15;
+                if (answers.tech_level === 'advanced') score += 15;
+
+                // Base score (10 points)
+                score += 10;
+
+                recs.push({key, ...tech, score, priority: ['🔴 קריטית', '🟠 גבוהה', '🟡 בינונית', '🟢 שימושית'][0]});
+            }
+
+            return recs
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 4)
+                .map((r, i) => ({...r, priority: ['🔴 קריטית', '🟠 גבוהה', '🟡 בינונית', '🟢 שימושית'][i]}));
+        }
+
+        // Functions
+        function selectAnswer(id, value) {
+            answers[id] = value;
+
+            // Update visual state WITHOUT re-rendering
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+
+            // Update Next button disabled state
+            const nextBtn = document.querySelector('.btn-primary');
+            if (nextBtn) {
+                nextBtn.disabled = !value;
+            }
+        }
+
+        function nextQuestion() {
+            const q = questions[currentStep];
+            if (q.type === 'textarea') {
+                answers[q.id] = document.getElementById('text-input').value;
+            }
+            if (!answers[q.id]) return;
+
+            if (currentStep < questions.length - 1) {
+                currentStep++;
+                renderQuizStep();
+            } else {
+                const recs = analyzeAnswers();
+                renderResults(recs);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderQuizStep();
+            }
+        }
+
+        function resetQuiz() {
+            currentStep = 0;
+            answers = {};
+            renderQuizStep();
+        }
+
+        // API Modal Functions
+        function openAPIModal() {
+            try {
+                const body = document.body;
+                const modalHTML = `
+                    <div class="modal-overlay" id="api-modal-overlay" onclick="if(event.target.id === 'api-modal-overlay') closeAPIModal()">
+                        <div class="modal-content" onclick="event.stopPropagation()">
+                            <div class="modal-title">🤖 שדרוג עם AI</div>
+                            <div class="modal-subtitle">חבר את Claude או ChatGPT כדי לקבל ניתוח אישי עמוק יותר של העסק שלך</div>
+
+                            <div class="api-info">
+                                💡 הוסף את ה-API key שלך כדי שהמערכת תוכל לנתח את תיאור העסק שלך עם AI מתקדם וליתן המלצות אישיות
+                            </div>
+
+                            <div class="api-input-group">
+                                <label class="api-input-label">בחר AI Engine:</label>
+                                <select id="api-provider" style="width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: var(--text-dark); background: white;">
+                                    <option value="claude">🧠 Anthropic Claude</option>
+                                    <option value="openai">🚀 OpenAI ChatGPT</option>
+                                </select>
+                            </div>
+
+                            <div class="api-input-group">
+                                <label class="api-input-label">API Key:</label>
+                                <input type="password" id="api-key-input" class="api-input" placeholder="sk-... (לא יישמר בשרת)" />
+                            </div>
+
+                            <div class="api-input-group">
+                                <label class="api-input-label" style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" id="remember-key" style="cursor: pointer; width: 18px; height: 18px; margin-left: 8px;" />
+                                    <span>זכור את ה-API key בדפדפן (בטוח רק אם זה המחשב שלך)</span>
+                                </label>
+                            </div>
+
+                            <div class="modal-buttons">
+                                <button class="modal-btn modal-btn-close" onclick="closeAPIModal()">ביטול</button>
+                                <button class="modal-btn modal-btn-submit" onclick="submitAPIKey()">חבר וניתח 🚀</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                body.insertAdjacentHTML('beforeend', modalHTML);
+                setTimeout(() => {
+                    const input = document.getElementById('api-key-input');
+                    if (input) input.focus();
+                }, 100);
+            } catch(e) {
+                console.error('Error opening modal:', e);
+                alert('שגיאה בפתיחת חלון API. אנא נסה שוב.');
+            }
+        }
+
+        function closeAPIModal(event) {
+            try {
+                const modal = document.querySelector('.modal-overlay');
+                if (modal) {
+                    modal.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => {
+                        const m = document.querySelector('.modal-overlay');
+                        if (m) m.remove();
+                    }, 300);
+                }
+            } catch(e) {
+                console.error('Error closing modal:', e);
+            }
+        }
+
+        function submitAPIKey() {
+            const provider = document.getElementById('api-provider').value;
+            const apiKey = document.getElementById('api-key-input').value;
+            const rememberKey = document.getElementById('remember-key').checked;
+
+            if (!apiKey || apiKey.trim().length < 10) {
+                alert('אנא הזן API key תקין');
+                return;
+            }
+
+            if (rememberKey) {
+                localStorage.setItem('api_provider', provider);
+                localStorage.setItem('api_key', apiKey);
+            }
+
+            closeAPIModal();
+            analyzeWithAI(provider, apiKey);
+        }
+
+        function analyzeWithAI(provider, apiKey) {
+            const loadingHTML = `
+                <div class="container">
+                    <div class="card" style="text-align: center;">
+                        <div class="spinner" style="margin: 40px auto 20px;"></div>
+                        <p class="loading-text">🤖 AI בוחן את העסק שלך...</p>
+                        <p style="color: var(--text-light); font-size: 13px; margin-top: 12px;">זה עלול לקחת כמה שניות</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('root').innerHTML = loadingHTML;
+
+            const businessDescription = answers.description || 'עסק קטן';
+            const userContext = `
+ประเภท עסק: ${answers.business}
+אתגר ראשי: ${answers.challenge}
+תקציב: ${answers.budget}
+תיאור מפורט: ${businessDescription}
+            `;
+
+            if (provider === 'claude') {
+                analyzeWithClaude(apiKey, userContext);
+            } else if (provider === 'openai') {
+                analyzeWithOpenAI(apiKey, userContext);
+            }
+        }
+
+        function analyzeWithClaude(apiKey, userContext) {
+            const businessType = answers.business || 'לא ידוע';
+            const challenge = answers.challenge || 'לא ידוע';
+            const budget = answers.budget || 'לא ידוע';
+            const teamSize = answers.team_size || 'לא ידוע';
+            const techLevel = answers.tech_level || 'לא ידוע';
+            const description = answers.description || 'ללא תיאור';
+
+            const prompt = `אתה יועץ עסקי מומחה בתחום הטכנולוגיה וטרנספורמציה דיגיטלית. אתה צריך לתת ניתוח עמוק ומדוייק של עסק קטן בהתאם לנתונים שקיבלת.
+
+📋 **נתוני העסק:**
+- סוג עסק: ${businessType}
+- בעיה ראשית: ${challenge}
+- תקציב חודשי: ${budget}
+- גודל צוות: ${teamSize}
+- רמת ידע טכנולוגי: ${techLevel}
+- תיאור מפורט: ${description}
+
+🎯 **מה צריך לעשות:**
+1. **ניתוח המצב הנוכחי**: סיכום מדוייק של הבעיות והאתגרים העיקריים של העסק הזה
+2. **הפריטי ההשקעה העיקריים**: אילו תהליכים או תחומים צריך לשנות ראשית
+3. **3-5 המלצות טכנולוגיות ספציפיות**: ספציפי לעסק זה, לא כללי. כלל מחירים משוערים
+4. **תכנית יישום**: צעדים구체 להטמעת הכלים, לפי סדר עדיפויות
+5. **ציפיות תוצאה**: מה צפוי להשתנות בעסק (זמן, כסף, איכות)
+6. **סיכוני אפשריים**: מה עלול להסתבך ואיך להימנע מכך
+
+📝 תן תשובה מפורטת וישירה בעברית, שימושית ויישומית, לא תיאורטית.
+תן תשובה בעברית שלמה וברורה שעסק קטן יוכל להבין ולהשתמש בה.`;
+
+            fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 1024,
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.content && data.content[0]) {
+                    const analysis = data.content[0].text;
+                    displayAIAnalysis(analysis);
+                } else {
+                    displayAIError('שגיאה בקבלת תגובה מ-Claude');
+                }
+            })
+            .catch(error => {
+                console.error('Claude API Error:', error);
+                displayAIError('שגיאה בחיבור ל-Claude API. בדוק את ה-API key.');
+            });
+        }
+
+        function analyzeWithOpenAI(apiKey, userContext) {
+            const businessType = answers.business || 'לא ידוע';
+            const challenge = answers.challenge || 'לא ידוע';
+            const budget = answers.budget || 'לא ידוע';
+            const teamSize = answers.team_size || 'לא ידוע';
+            const techLevel = answers.tech_level || 'לא ידוע';
+            const description = answers.description || 'ללא תיאור';
+
+            const prompt = `אתה יועץ עסקי מומחה בתחום הטכנולוגיה וטרנספורמציה דיגיטלית. אתה צריך לתת ניתוח עמוק ומדוייק של עסק קטן בהתאם לנתונים שקיבלת.
+
+📋 **נתוני העסק:**
+- סוג עסק: ${businessType}
+- בעיה ראשית: ${challenge}
+- תקציב חודשי: ${budget}
+- גודל צוות: ${teamSize}
+- רמת ידע טכנולוגי: ${techLevel}
+- תיאור מפורט: ${description}
+
+🎯 **מה צריך לעשות:**
+1. **ניתוח המצב הנוכחי**: סיכום מדוייק של הבעיות והאתגרים העיקריים של העסק הזה
+2. **הפריטי ההשקעה העיקריים**: אילו תהליכים או תחומים צריך לשנות ראשית
+3. **3-5 המלצות טכנולוגיות ספציפיות**: ספציפי לעסק זה, לא כללי. כלל מחירים משוערים
+4. **תכנית יישום**: צעדים קונקרטיים להטמעת הכלים, לפי סדר עדיפויות
+5. **ציפיות תוצאה**: מה צפוי להשתנות בעסק (זמן, כסף, איכות)
+6. **סיכוני אפשריים**: מה עלול להסתבך ואיך להימנע מכך
+
+📝 תן תשובה מפורטת וישירה בעברית, שימושית ויישומית, לא תיאורטית.
+תן תשובה בעברית שלמה וברורה שעסק קטן יוכל להבין ולהשתמש בה.`;
+
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }],
+                    max_tokens: 1024,
+                    temperature: 0.7
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const analysis = data.choices[0].message.content;
+                    displayAIAnalysis(analysis);
+                } else if (data.error) {
+                    displayAIError(`שגיאה ממערכת OpenAI: ${data.error.message}`);
+                } else {
+                    displayAIError('שגיאה בקבלת תגובה מ-ChatGPT');
+                }
+            })
+            .catch(error => {
+                console.error('OpenAI API Error:', error);
+                displayAIError('שגיאה בחיבור ל-OpenAI API. בדוק את ה-API key.');
+            });
+        }
+
+        function displayAIAnalysis(analysis) {
+            const root = document.getElementById('root');
+
+            // Parse analysis into sections
+            const sections = analysis.split('\n\n').filter(s => s.trim());
+            const sectionHTML = sections.map((section, idx) => {
+                return `
+                    <div style="margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(0, 212, 255, 0.05)); border-radius: 12px; border-right: 4px solid var(--accent);">
+                        ${section.split('\n').map(line => {
+                            if (line.match(/^[0-9\-\*]/)) {
+                                return `<div style="margin: 8px 0; color: var(--text-dark); line-height: 1.6;">${line}</div>`;
+                            }
+                            return `<div style="margin: 4px 0; color: var(--text-light); line-height: 1.6; font-size: 13px;">${line}</div>`;
+                        }).join('')}
+                    </div>
+                `;
+            }).join('');
+
+            root.innerHTML = `
+                <div class="container">
+                    <div style="margin-bottom: 40px;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h1 style="font-size: 42px; margin-bottom: 12px;">🤖 ניתוח AI עמוק של העסק שלך</h1>
+                            <p class="subtitle" style="font-size: 18px;">ניתוח אישי מותאם בהתאם לנתונים שהתת</p>
+                        </div>
+
+                        <div style="max-width: 900px; margin: 0 auto;">
+                            ${sectionHTML}
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="goBackToResults()" style="padding: 14px 32px; font-size: 15px;">
+                                ← חזור להמלצות
+                            </button>
+                            <button class="btn-primary" onclick="resetQuiz()" style="padding: 14px 32px; font-size: 15px; background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                                🔄 תחקור חדש
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayAIError(errorMsg) {
+            const root = document.getElementById('root');
+            root.innerHTML = `
+                <div class="container">
+                    <div class="card fade-in-up">
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+                            <h2>${errorMsg}</h2>
+                            <p class="subtitle" style="margin-top: 12px;">אנא בדוק את ה-API key וחברה מחדש.</p>
+                            <button class="btn-primary" onclick="goBackToResults()" style="margin-top: 20px; padding: 12px 28px;">
+                                ← חזור להמלצות
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function goBackToResults() {
+            const recs = analyzeAnswers();
+            renderResults(recs);
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuizStep();
+        });
+    </script>
+</body>
+</html>
