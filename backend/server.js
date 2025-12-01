@@ -10,6 +10,7 @@ const { errorHandler } = require('./middleware/error-handler');
 const authRoutes = require('./routes/auth');
 const analyzeRoutes = require('./routes/analyze');
 const exportRoutes = require('./routes/export');
+const aiAnalysisRoutes = require('./routes/ai-analysis');
 
 // Initialize app
 const app = express();
@@ -76,6 +77,9 @@ app.use('/api/auth', authRoutes);
 
 // Analysis routes
 app.use('/api/analyze', analyzeRoutes);
+
+// AI Analysis routes (OpenAI-powered recommendations)
+app.use('/api/ai-analysis', aiAnalysisRoutes);
 
 // Export routes (document generation)
 app.use('/api/export', exportRoutes);

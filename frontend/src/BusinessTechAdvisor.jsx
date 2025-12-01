@@ -68,47 +68,55 @@ function BusinessTechAdvisor() {
     setAnalyzeError(null);
 
     try {
-      // Get local recommendations first (these are used for display and export)
-      const localResults = analyzeAnswers(allAnswers);
-
-      console.log('🔍 Analysis Debug:');
-      console.log('  localResults:', localResults);
-      console.log('  localResults type:', Array.isArray(localResults) ? 'Array' : 'Object');
-      console.log('  localResults length:', localResults?.length);
-      console.log('  allAnswers:', allAnswers);
-
-      // Prepare user analysis data with proper field names for backend
-      // Map quiz field names to backend field names
-      const userAnalysis = {
+      // Prepare data to send to AI API
+      const aiRequestData = {
         businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
         businessType: allAnswers.business || 'General Business',
-        mainChallenge: allAnswers.challenge || 'Growth and efficiency',
-        techLevel: allAnswers.tech_level || 'basic',
+        challenges: allAnswers.challenge ? [allAnswers.challenge] : [],
         budget: allAnswers.budget || 'medium',
-        timeline: '3-6 months',
         teamSize: allAnswers.team_size || 'small',
-        additionalContext: allAnswers.description || ''
+        techLevel: allAnswers.tech_level || 'basic',
+        description: allAnswers.description || 'Business needs technology solutions'
       };
 
-      // Check if backend API is available
-      let apiAvailable = false;
-      try {
-        const healthResponse = await fetch(`${API_URL.replace('/api', '')}/health`, {
-          method: 'GET',
-          timeout: 5000
-        });
-        apiAvailable = healthResponse.ok;
-      } catch (healthErr) {
-        console.error('Backend health check failed:', healthErr);
-        apiAvailable = false;
+      console.log('🤖 Sending to AI API:', aiRequestData);
+
+      // Call the AI analysis API endpoint
+      const aiResponse = await fetch(`${API_URL}/ai-analysis/recommend`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(aiRequestData)
+      });
+
+      if (!aiResponse.ok) {
+        throw new Error(`API error: ${aiResponse.status} ${aiResponse.statusText}`);
       }
 
-      // Store results as array - don't spread it!
+      const aiData = await aiResponse.json();
+
+      console.log('✅ AI Response:', aiData);
+
+      // Prepare user analysis data
+      const userAnalysis = {
+        businessName: aiRequestData.businessName,
+        businessType: aiRequestData.businessType,
+        mainChallenge: aiRequestData.challenges.join(', ') || 'Growth and efficiency',
+        techLevel: aiRequestData.techLevel,
+        budget: aiRequestData.budget,
+        timeline: '3-6 months',
+        teamSize: aiRequestData.teamSize,
+        additionalContext: aiRequestData.description
+      };
+
+      // Store AI recommendations
       const resultsToSet = {
-        recommendations: localResults,
+        recommendations: aiData.recommendations || [],
         userAnalysis,
-        hasAIAnalysis: false,
-        apiAvailable: apiAvailable
+        analysis: aiData.analysis,
+        hasAIAnalysis: true,
+        apiAvailable: true
       };
 
       console.log('📊 Results being set:', resultsToSet);
@@ -116,21 +124,28 @@ function BusinessTechAdvisor() {
       setAnalysisResults(resultsToSet);
     } catch (err) {
       console.error('AI Analysis error:', err);
+      setAnalyzeError(`Failed to get recommendations: ${err.message}`);
+
       // Fallback to local analysis if API fails
-      const localResults = analyzeAnswers(allAnswers);
-      setAnalysisResults({
-        recommendations: localResults,
-        userAnalysis: {
-          businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
-          businessType: allAnswers.business || 'General Business',
-          mainChallenge: allAnswers.challenge || 'Growth and efficiency',
-          techLevel: allAnswers.tech_level || 'basic',
-          budget: allAnswers.budget || 'medium',
-          timeline: '3-6 months',
-          teamSize: allAnswers.team_size || 'small'
-        },
-        apiAvailable: false
-      });
+      try {
+        const localResults = analyzeAnswers(allAnswers);
+        setAnalysisResults({
+          recommendations: localResults,
+          userAnalysis: {
+            businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
+            businessType: allAnswers.business || 'General Business',
+            mainChallenge: allAnswers.challenge || 'Growth and efficiency',
+            techLevel: allAnswers.tech_level || 'basic',
+            budget: allAnswers.budget || 'medium',
+            timeline: '3-6 months',
+            teamSize: allAnswers.team_size || 'small'
+          },
+          hasAIAnalysis: false,
+          apiAvailable: false
+        });
+      } catch (fallbackErr) {
+        setAnalyzeError('Could not generate recommendations');
+      }
     } finally {
       setIsAnalyzing(false);
     }
@@ -304,9 +319,19 @@ function ResultsView({ results, onReset }) {
         <div className="results-header fade-in-up">
           <h1>🎯 המלצות טכנולוגיות עבורך</h1>
           <p className="subtitle">בהתאם לתשובותיך, הנה 4 הפתרונות הטובים ביותר להעלאת העסק שלך</p>
-          {results.apiAvailable === false && (
+          {results.hasAIAnalysis && (
+            <p style={{ color: '#4CAF50', fontSize: 14, marginTop: 8 }}>
+              ✨ המלצות אלו מופקות על ידי AI בעזרת OpenAI - ניתוח דינמי ומתאים לעסקך
+            </p>
+          )}
+          {results.apiAvailable === false && !results.hasAIAnalysis && (
             <p style={{ color: '#ff9800', fontSize: 14, marginTop: 8 }}>
               💡 המלצות אלו הם בהתאם לניתוח מקומי. לקבלת ניתוח מפורט עם OpenAI, נא לבדוק את חיבור השרת.
+            </p>
+          )}
+          {results.analysis && (
+            <p style={{ color: '#666', fontSize: 13, marginTop: 12, fontStyle: 'italic' }}>
+              {results.analysis}
             </p>
           )}
         </div>
