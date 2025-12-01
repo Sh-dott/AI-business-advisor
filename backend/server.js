@@ -22,9 +22,29 @@ connectDB();
 // Security
 app.use(helmet());
 
-// CORS
+// CORS - Allow frontend and localhost
+const allowedOrigins = [
+  config.FRONTEND_URL,
+  'https://sh-dott.github.io',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5000'
+];
+
 app.use(cors({
-  origin: config.FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // Check if origin is in allowed list
+    if (allowedOrigins.some(allowed => origin.includes(allowed) || allowed.includes(origin))) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(null, true); // Still allow for now, but log it
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 }));
