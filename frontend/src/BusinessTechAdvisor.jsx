@@ -269,6 +269,21 @@ function ResultsView({ results, onReset }) {
 
     console.log('✅ Extracted recommendations:', recommendations);
     console.log('✅ Extracted userAnalysis:', userAnalysis);
+
+    // Debug: Check each recommendation for React elements
+    if (recommendations && Array.isArray(recommendations)) {
+      recommendations.forEach((rec, idx) => {
+        console.log(`📦 Recommendation ${idx}:`, rec);
+        if (rec) {
+          Object.keys(rec).forEach(key => {
+            const val = rec[key];
+            if (val && typeof val === 'object' && val.$$typeof) {
+              console.error(`❌ FOUND REACT ELEMENT at rec[${idx}].${key}:`, val);
+            }
+          });
+        }
+      });
+    }
   }
 
   return (
@@ -313,29 +328,39 @@ function ResultsView({ results, onReset }) {
                     <div className="priority-badge">{rec.priority}</div>
                   </div>
 
-                  <p className="rec-description">{rec.description}</p>
+                  <p className="rec-description">{String(rec.description || '')}</p>
 
-                  {rec.factors && (
+                  {rec.factors && Array.isArray(rec.factors) && (
                     <ul className="factors">
-                      {rec.factors.map((f, i) => (
-                        <li key={i}>{f}</li>
-                      ))}
+                      {rec.factors.map((f, i) => {
+                        if (typeof f !== 'string') {
+                          console.warn(`⚠️ Non-string factor at index ${i}:`, f);
+                          return null;
+                        }
+                        return <li key={i}>{f}</li>;
+                      })}
                     </ul>
                   )}
 
-                  {rec.steps && (
+                  {rec.steps && Array.isArray(rec.steps) && (
                     <div className="step-list">
                       <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 12 }}>
                         📋 תוכנית יישום:
                       </div>
-                      {rec.steps.map((step, i) => (
-                        <div key={i} className="step-item">
-                          <div className="step-number">{i + 1}</div>
-                          <div className="step-content">
-                            <p>{step}</p>
+                      {rec.steps.map((step, i) => {
+                        if (typeof step !== 'string') {
+                          console.warn(`⚠️ Non-string step at index ${i}:`, step);
+                          return null;
+                        }
+                        return (
+                          <div key={i} className="step-item">
+                            <div className="step-number">{i + 1}</div>
+                            <div className="step-content">
+                              <p>{step}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
 
