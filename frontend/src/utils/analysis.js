@@ -96,11 +96,22 @@ export function analyzeAnswers(answers) {
     return Object.values(scores)
         .sort((a, b) => b.score - a.score)
         .slice(0, 4)
-        .map(item => ({
-            ...item.tech,
-            priority: item.priority,
-            score: item.score
-        }));
+        .map(item => {
+            // Return only the properties needed for rendering, exclude arrays/objects that shouldn't be rendered
+            return {
+                name: item.tech.name,
+                category: item.tech.category,
+                description: item.tech.description,
+                pricing: item.tech.pricing,
+                setup: item.tech.setup,
+                complexity: item.tech.complexity,
+                factors: item.tech.factors || [],
+                steps: item.tech.steps || [],
+                link: item.tech.link,
+                priority: item.priority,
+                score: item.score
+            };
+        });
 }
 
 function checkBudgetFit(budget, pricing) {
