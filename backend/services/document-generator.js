@@ -20,76 +20,184 @@ class DocumentGenerator {
    */
   async generateBusinessProgram(userAnalysis, recommendations) {
     try {
-      const sections = [];
+      const children = [];
 
-      // Add cover page
-      const coverPageItems = this.createCoverPage(userAnalysis);
-      if (Array.isArray(coverPageItems)) {
-        sections.push(...coverPageItems);
-      }
-      sections.push(new Paragraph(''));
+      // Title
+      children.push(
+        new Paragraph({
+          text: 'BUSINESS TRANSFORMATION PROGRAM',
+          heading: HeadingLevel.HEADING_1,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 400 }
+        })
+      );
 
-      // Add executive summary
-      const execSummaryItems = this.createExecutiveSummary(userAnalysis, recommendations);
-      if (Array.isArray(execSummaryItems)) {
-        sections.push(...execSummaryItems);
-      }
-      sections.push(new PageBreak());
+      // Business name
+      children.push(
+        new Paragraph({
+          text: userAnalysis.businessName || 'Your Business',
+          heading: HeadingLevel.HEADING_2,
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 400 }
+        })
+      );
 
-      // Add diagnosis section
-      const diagnosisItems = this.createDiagnosis(userAnalysis);
-      if (Array.isArray(diagnosisItems)) {
-        sections.push(...diagnosisItems);
-      }
-      sections.push(new PageBreak());
-
-      // Add recommended technologies
-      const techRecommendations = this.createTechnologyRecommendations(recommendations);
-      if (Array.isArray(techRecommendations)) {
-        sections.push(...techRecommendations);
-      }
-      sections.push(new PageBreak());
-
-      // Add implementation roadmap
-      const roadmap = this.createImplementationRoadmap(recommendations);
-      if (Array.isArray(roadmap)) {
-        sections.push(...roadmap);
-      }
-      sections.push(new PageBreak());
-
-      // Add success metrics
-      const metricsItems = this.createSuccessMetrics(userAnalysis);
-      if (Array.isArray(metricsItems)) {
-        sections.push(...metricsItems);
-      }
-      sections.push(new PageBreak());
-
-      // Add action plan
-      const actionPlanItems = this.createActionPlan(recommendations, userAnalysis);
-      if (Array.isArray(actionPlanItems)) {
-        sections.push(...actionPlanItems);
-      }
-
-      // Filter out any undefined, null, or non-valid items from sections
-      const validSections = sections.filter(item => {
-        if (!item) return false;
-        // Check if it's a valid docx object
-        return typeof item === 'object' && (
-          item.constructor?.name === 'Paragraph' ||
-          item.constructor?.name === 'Table' ||
-          item.constructor?.name === 'PageBreak'
+      // Business type
+      if (userAnalysis.businessType) {
+        children.push(
+          new Paragraph({
+            text: `Business Type: ${userAnalysis.businessType}`,
+            spacing: { after: 200 }
+          })
         );
-      });
-
-      // Ensure we have at least one paragraph
-      if (validSections.length === 0) {
-        validSections.push(new Paragraph('Business Program Generated'));
       }
+
+      // Main challenge
+      if (userAnalysis.mainChallenge) {
+        children.push(
+          new Paragraph({
+            text: `Primary Challenge: ${userAnalysis.mainChallenge}`,
+            spacing: { after: 200 }
+          })
+        );
+      }
+
+      // Budget
+      if (userAnalysis.budget) {
+        children.push(
+          new Paragraph({
+            text: `Budget: ${userAnalysis.budget}`,
+            spacing: { after: 200 }
+          })
+        );
+      }
+
+      // Timeline
+      if (userAnalysis.timeline) {
+        children.push(
+          new Paragraph({
+            text: `Implementation Timeline: ${userAnalysis.timeline}`,
+            spacing: { after: 400 }
+          })
+        );
+      }
+
+      // Recommendations heading
+      children.push(
+        new Paragraph({
+          text: 'Recommended Technologies',
+          heading: HeadingLevel.HEADING_1,
+          spacing: { before: 400, after: 200 }
+        })
+      );
+
+      // Add recommendations
+      if (Array.isArray(recommendations) && recommendations.length > 0) {
+        recommendations.forEach((rec, index) => {
+          children.push(
+            new Paragraph({
+              text: `${index + 1}. ${rec.name || 'Technology'}`,
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 200, after: 100 }
+            })
+          );
+
+          if (rec.description) {
+            children.push(
+              new Paragraph({
+                text: rec.description,
+                spacing: { after: 100 }
+              })
+            );
+          }
+
+          if (rec.category) {
+            children.push(
+              new Paragraph({
+                text: `Category: ${rec.category}`,
+                spacing: { after: 100 }
+              })
+            );
+          }
+
+          if (rec.priority) {
+            children.push(
+              new Paragraph({
+                text: `Priority: ${rec.priority}`,
+                spacing: { after: 100 }
+              })
+            );
+          }
+
+          // Features/Factors
+          if (rec.factors && Array.isArray(rec.factors) && rec.factors.length > 0) {
+            children.push(
+              new Paragraph({
+                text: 'Why This Solution:',
+                heading: HeadingLevel.HEADING_3,
+                spacing: { after: 50 }
+              })
+            );
+            rec.factors.forEach(factor => {
+              children.push(
+                new Paragraph({
+                  text: `• ${factor}`,
+                  spacing: { after: 50 },
+                  indent: { left: 720 }
+                })
+              );
+            });
+            children.push(new Paragraph({ text: '', spacing: { after: 100 } }));
+          }
+
+          if (rec.pricing) {
+            children.push(
+              new Paragraph({
+                text: `Pricing: ${rec.pricing}`,
+                spacing: { after: 100 },
+                italics: true
+              })
+            );
+          }
+
+          if (rec.complexity || rec.setup) {
+            children.push(
+              new Paragraph({
+                text: `Implementation: ${rec.complexity || 'Moderate'} complexity | Setup: ${rec.setup || 'Quick'}`,
+                spacing: { after: 100 },
+                italics: true
+              })
+            );
+          }
+
+          if (rec.link || rec.website) {
+            children.push(
+              new Paragraph({
+                text: `Website: ${rec.link || rec.website}`,
+                spacing: { after: 200 },
+                color: '0070C0'
+              })
+            );
+          }
+        });
+      }
+
+      // Footer
+      children.push(
+        new Paragraph({
+          text: `Generated: ${this.documentDate}`,
+          spacing: { before: 400 },
+          alignment: AlignmentType.CENTER,
+          italics: true,
+          color: '666666',
+          size: 20
+        })
+      );
 
       const doc = new Document({
         sections: [
           {
-            children: validSections
+            children: children
           }
         ]
       });
