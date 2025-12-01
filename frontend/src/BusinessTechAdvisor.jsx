@@ -257,9 +257,11 @@ function ResultsView({ results, onReset }) {
       recommendations = results;
     } else {
       // If results is an object, extract array items by filtering
-      recommendations = Object.values(results).filter(item =>
-        item && typeof item === 'object' && item.name && item.category
-      );
+      // Look for numeric indices (0, 1, 2, 3...) which contain recommendation objects
+      recommendations = Object.keys(results)
+        .filter(key => /^\d+$/.test(key)) // Only numeric keys
+        .map(key => results[key])
+        .filter(item => item && typeof item === 'object');
     }
   }
 
