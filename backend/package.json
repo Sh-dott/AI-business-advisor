@@ -33,6 +33,7 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
+    "openai": "^6.9.1",
     "pdf-lib": "^1.17.1",
     "sharp": "^0.34.5",
     "validator": "^13.11.0"
