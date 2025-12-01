@@ -83,28 +83,25 @@ function BusinessTechAdvisor() {
         additionalContext: allAnswers.additionalContext || ''
       };
 
-      // Call backend API to test document generation
-      const response = await fetch(`${API_URL}/export/program`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userAnalysis,
-          recommendations: localResults  // Send local results for document generation
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate document');
+      // Check if backend API is available
+      let apiAvailable = false;
+      try {
+        const healthResponse = await fetch(`${API_URL.replace('/api', '')}/health`, {
+          method: 'GET',
+          timeout: 5000
+        });
+        apiAvailable = healthResponse.ok;
+      } catch (healthErr) {
+        console.error('Backend health check failed:', healthErr);
+        apiAvailable = false;
       }
 
       // Display local analysis results with user analysis attached for export
       setAnalysisResults({
         ...localResults,
         userAnalysis,
-        hasAIAnalysis: true,
-        apiAvailable: true
+        hasAIAnalysis: false,
+        apiAvailable: apiAvailable
       });
     } catch (err) {
       console.error('AI Analysis error:', err);
@@ -123,7 +120,6 @@ function BusinessTechAdvisor() {
         },
         apiAvailable: false
       });
-      setAnalyzeError('Backend API unavailable - showing local recommendations. You can still download documents.');
     } finally {
       setIsAnalyzing(false);
     }
