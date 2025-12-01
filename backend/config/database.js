@@ -3,6 +3,13 @@ const mongoose = require('mongoose');
 const config = require('./environment');
 
 const connectDB = async () => {
+  // Skip database connection if MONGODB_URI is not configured
+  if (!config.MONGODB_URI) {
+    console.log('⚠ MongoDB not configured - skipping database connection');
+    console.log('  (App uses Word document export instead of database storage)');
+    return null;
+  }
+
   try {
     const conn = await mongoose.connect(config.MONGODB_URI, {
       useNewUrlParser: true,
@@ -18,7 +25,9 @@ const connectDB = async () => {
     console.error('✗ MongoDB Connection Error:', error.message);
 
     if (config.NODE_ENV === 'production') {
-      process.exit(1);
+      // In production, continue without database (we use Word export instead)
+      console.warn('⚠ Continuing without database (using Word document export)');
+      return null;
     }
 
     // In development, allow continued operation
