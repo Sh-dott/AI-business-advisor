@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { questions } from './data/questions';
 import { technologies } from './data/technologies';
 import { analyzeAnswers } from './utils/analysis';
+import ExportProgram from './components/ExportProgram';
 import './index.css';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 function BusinessTechAdvisor() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [analysisResults, setAnalysisResults] = useState(null);
   const [textInput, setTextInput] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState(null);
 
   useEffect(() => {
     // Load saved answers from localStorage
@@ -35,7 +40,7 @@ function BusinessTechAdvisor() {
     setTextInput(e.target.value);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const q = questions[currentStep];
 
     if (q.type === 'textarea') {
@@ -46,11 +51,80 @@ function BusinessTechAdvisor() {
     }
 
     if (currentStep === questions.length - 1) {
-      // Run analysis
-      const results = analyzeAnswers(answers);
-      setAnalysisResults(results);
+      // Get all answers including current textarea
+      const allAnswers = q.type === 'textarea'
+        ? { ...answers, [q.id]: textInput }
+        : answers;
+
+      // Try to use backend API for AI-powered analysis
+      await performAIAnalysis(allAnswers);
     } else {
       setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const performAIAnalysis = async (allAnswers) => {
+    setIsAnalyzing(true);
+    setAnalyzeError(null);
+
+    try {
+      // Prepare user analysis data
+      const userAnalysis = {
+        businessName: allAnswers.businessName || 'Your Business',
+        industry: allAnswers.industry,
+        size: allAnswers.size,
+        budget: allAnswers.budget,
+        primaryChallenges: allAnswers.challenges,
+        goals: allAnswers.goals,
+        timeline: allAnswers.timeline,
+        additionalContext: allAnswers.additionalContext || ''
+      };
+
+      // Call backend API for OpenAI-powered analysis
+      const response = await fetch(`${API_URL}/export/program`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userAnalysis,
+          recommendations: [], // Backend will generate these
+          generateAnalysis: true // Signal that we want AI analysis
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate AI analysis');
+      }
+
+      // For now, use local analysis as fallback and display it
+      const localResults = analyzeAnswers(allAnswers);
+      setAnalysisResults({
+        ...localResults,
+        userAnalysis,
+        hasAIAnalysis: true,
+        apiAvailable: true
+      });
+    } catch (err) {
+      console.error('AI Analysis error:', err);
+      // Fallback to local analysis if API fails
+      const localResults = analyzeAnswers(allAnswers);
+      setAnalysisResults({
+        ...localResults,
+        userAnalysis: {
+          businessName: allAnswers.businessName || 'Your Business',
+          industry: allAnswers.industry,
+          size: allAnswers.size,
+          budget: allAnswers.budget,
+          primaryChallenges: allAnswers.challenges,
+          goals: allAnswers.goals,
+          timeline: allAnswers.timeline
+        },
+        apiAvailable: false
+      });
+      setAnalyzeError('Backend API unavailable - showing local recommendations');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -65,6 +139,7 @@ function BusinessTechAdvisor() {
     setAnswers({});
     setAnalysisResults(null);
     setTextInput('');
+    setAnalyzeError(null);
     localStorage.removeItem('techAdvisorAnswers');
   };
 
@@ -142,18 +217,28 @@ function BusinessTechAdvisor() {
 
           <div className="button-group">
             {currentStep > 0 && (
-              <button className="btn-secondary" onClick={handlePrevious}>
+              <button className="btn-secondary" onClick={handlePrevious} disabled={isAnalyzing}>
                 ← חזור
               </button>
             )}
             <button
               className="btn-primary"
               onClick={handleNext}
-              disabled={!isAnswered && q.type === 'multiple'}
+              disabled={(!isAnswered && q.type === 'multiple') || isAnalyzing}
             >
-              {currentStep === questions.length - 1 ? 'קבל המלצות ➜' : 'הבא ➜'}
+              {isAnalyzing ? (
+                <>
+                  <span style={{ marginRight: 8 }}>🔄</span>
+                  מנתח...
+                </>
+              ) : currentStep === questions.length - 1 ? 'קבל המלצות ➜' : 'הבא ➜'}
             </button>
           </div>
+          {analyzeError && (
+            <div style={{ marginTop: 16, padding: 12, backgroundColor: '#fff3cd', borderRadius: 8, color: '#856404' }}>
+              ⚠️ {analyzeError}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -161,6 +246,14 @@ function BusinessTechAdvisor() {
 }
 
 function ResultsView({ results, onReset }) {
+  // Extract recommendations that are objects with proper structure
+  const recommendations = Array.isArray(results) && results.length > 0 && typeof results[0] === 'object'
+    ? results
+    : [];
+
+  // Extract user analysis if it exists in results
+  const userAnalysis = results.userAnalysis || {};
+
   return (
     <div className="advisor-container">
       <div className="bg-container">
@@ -179,10 +272,15 @@ function ResultsView({ results, onReset }) {
         <div className="results-header fade-in-up">
           <h1>🎯 המלצות טכנולוגיות עבורך</h1>
           <p className="subtitle">בהתאם לתשובותיך, הנה 4 הפתרונות הטובים ביותר להעלאת העסק שלך</p>
+          {results.apiAvailable === false && (
+            <p style={{ color: '#ff9800', fontSize: 14, marginTop: 8 }}>
+              💡 המלצות אלו הם בהתאם לניתוח מקומי. לקבלת ניתוח מפורט עם OpenAI, נא לבדוק את חיבור השרת.
+            </p>
+          )}
         </div>
 
         <div className="results-grid">
-          {results.map((rec, idx) => (
+          {recommendations.map((rec, idx) => (
             <div key={idx} className="recommendation-card fade-in-up">
               <div className="rec-header">
                 <div>
@@ -236,7 +334,14 @@ function ResultsView({ results, onReset }) {
           ))}
         </div>
 
-        <div style={{ textAlign: 'center', margin: '60px 0' }}>
+        {/* Export Program Component */}
+        {Object.keys(userAnalysis).length > 0 && recommendations.length > 0 && (
+          <div style={{ margin: '60px 0', padding: '40px 0', borderTop: '1px solid #eee' }}>
+            <ExportProgram userAnalysis={userAnalysis} recommendations={recommendations} />
+          </div>
+        )}
+
+        <div style={{ textAlign: 'center', margin: '40px 0' }}>
           <button className="btn-primary" onClick={onReset} style={{ fontSize: 16, padding: '14px 32px' }}>
             🔄 תן לי לנסות שוב
           </button>
