@@ -23,34 +23,63 @@ class DocumentGenerator {
       const sections = [];
 
       // Add cover page
-      sections.push(...this.createCoverPage(userAnalysis));
+      const coverPageItems = this.createCoverPage(userAnalysis);
+      if (Array.isArray(coverPageItems)) {
+        sections.push(...coverPageItems);
+      }
       sections.push(new Paragraph(''));
 
       // Add executive summary
-      sections.push(...this.createExecutiveSummary(userAnalysis, recommendations));
+      const execSummaryItems = this.createExecutiveSummary(userAnalysis, recommendations);
+      if (Array.isArray(execSummaryItems)) {
+        sections.push(...execSummaryItems);
+      }
       sections.push(new PageBreak());
 
       // Add diagnosis section
-      sections.push(...this.createDiagnosis(userAnalysis));
+      const diagnosisItems = this.createDiagnosis(userAnalysis);
+      if (Array.isArray(diagnosisItems)) {
+        sections.push(...diagnosisItems);
+      }
       sections.push(new PageBreak());
 
       // Add recommended technologies
-      sections.push(...this.createTechnologyRecommendations(recommendations));
+      const techRecommendations = this.createTechnologyRecommendations(recommendations);
+      if (Array.isArray(techRecommendations)) {
+        sections.push(...techRecommendations);
+      }
       sections.push(new PageBreak());
 
       // Add implementation roadmap
-      sections.push(...this.createImplementationRoadmap(recommendations));
+      const roadmap = this.createImplementationRoadmap(recommendations);
+      if (Array.isArray(roadmap)) {
+        sections.push(...roadmap);
+      }
       sections.push(new PageBreak());
 
       // Add success metrics
-      sections.push(...this.createSuccessMetrics(userAnalysis));
+      const metricsItems = this.createSuccessMetrics(userAnalysis);
+      if (Array.isArray(metricsItems)) {
+        sections.push(...metricsItems);
+      }
       sections.push(new PageBreak());
 
       // Add action plan
-      sections.push(...this.createActionPlan(recommendations, userAnalysis));
+      const actionPlanItems = this.createActionPlan(recommendations, userAnalysis);
+      if (Array.isArray(actionPlanItems)) {
+        sections.push(...actionPlanItems);
+      }
 
-      // Filter out any undefined or null items from sections
-      const validSections = sections.filter(item => item !== undefined && item !== null);
+      // Filter out any undefined, null, or non-valid items from sections
+      const validSections = sections.filter(item => {
+        if (!item) return false;
+        // Check if it's a valid docx object
+        return typeof item === 'object' && (
+          item.constructor?.name === 'Paragraph' ||
+          item.constructor?.name === 'Table' ||
+          item.constructor?.name === 'PageBreak'
+        );
+      });
 
       const doc = new Document({
         sections: [{
