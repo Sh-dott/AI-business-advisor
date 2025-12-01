@@ -49,9 +49,12 @@ class DocumentGenerator {
       // Add action plan
       sections.push(...this.createActionPlan(recommendations, userAnalysis));
 
+      // Filter out any undefined or null items from sections
+      const validSections = sections.filter(item => item !== undefined && item !== null);
+
       const doc = new Document({
         sections: [{
-          children: sections
+          children: validSections
         }]
       });
 
