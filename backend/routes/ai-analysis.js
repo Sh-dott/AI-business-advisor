@@ -153,9 +153,16 @@ Make recommendations that are:
 
   } catch (error) {
     console.error('AI Analysis error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      type: error.type,
+      status: error.status
+    });
     res.status(500).json({
       error: 'Failed to generate recommendations',
-      message: error.message
+      message: error.message,
+      details: error.code || error.type
     });
   }
 });

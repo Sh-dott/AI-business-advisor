@@ -124,28 +124,8 @@ function BusinessTechAdvisor() {
       setAnalysisResults(resultsToSet);
     } catch (err) {
       console.error('AI Analysis error:', err);
-      setAnalyzeError(`Failed to get recommendations: ${err.message}`);
-
-      // Fallback to local analysis if API fails
-      try {
-        const localResults = analyzeAnswers(allAnswers);
-        setAnalysisResults({
-          recommendations: localResults,
-          userAnalysis: {
-            businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
-            businessType: allAnswers.business || 'General Business',
-            mainChallenge: allAnswers.challenge || 'Growth and efficiency',
-            techLevel: allAnswers.tech_level || 'basic',
-            budget: allAnswers.budget || 'medium',
-            timeline: '3-6 months',
-            teamSize: allAnswers.team_size || 'small'
-          },
-          hasAIAnalysis: false,
-          apiAvailable: false
-        });
-      } catch (fallbackErr) {
-        setAnalyzeError('Could not generate recommendations');
-      }
+      console.error('Error response:', err.response?.data || err.message);
+      setAnalyzeError(`⚠️ AI API Error: ${err.message}. Please check that OPENAI_API_KEY is configured on the backend.`);
     } finally {
       setIsAnalyzing(false);
     }
