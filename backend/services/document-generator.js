@@ -81,10 +81,17 @@ class DocumentGenerator {
         );
       });
 
+      // Ensure we have at least one paragraph
+      if (validSections.length === 0) {
+        validSections.push(new Paragraph('Business Program Generated'));
+      }
+
       const doc = new Document({
-        sections: [{
-          children: validSections
-        }]
+        sections: [
+          {
+            children: validSections
+          }
+        ]
       });
 
       return doc;
