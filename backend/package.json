@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "test:api": "jest tests/api.test.js",
     "lint": "eslint .",
-    "build": "echo 'Node.js backend - no build needed'"
+    "build": "echo 'Node.js backend - no build needed'",
+    "postinstall": "npm rebuild bcrypt --build-from-source 2>/dev/null || true"
   },
   "keywords": [
     "ai",
