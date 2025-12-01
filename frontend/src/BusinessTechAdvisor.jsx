@@ -72,15 +72,16 @@ function BusinessTechAdvisor() {
       const localResults = analyzeAnswers(allAnswers);
 
       // Prepare user analysis data with proper field names for backend
+      // Map quiz field names to backend field names
       const userAnalysis = {
-        businessName: allAnswers.businessName || 'Your Business',
-        businessType: allAnswers.industry || 'General Business',  // Map: industry -> businessType
-        mainChallenge: allAnswers.challenges || 'Growth and efficiency',  // Map: challenges -> mainChallenge
-        techLevel: allAnswers.size || 'Small team',  // Map: size -> techLevel
-        budget: allAnswers.budget || 'Medium',
-        timeline: allAnswers.timeline || '3-6 months',
-        teamSize: allAnswers.size,
-        additionalContext: allAnswers.additionalContext || ''
+        businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
+        businessType: allAnswers.business || 'General Business',
+        mainChallenge: allAnswers.challenge || 'Growth and efficiency',
+        techLevel: allAnswers.tech_level || 'basic',
+        budget: allAnswers.budget || 'medium',
+        timeline: '3-6 months',
+        teamSize: allAnswers.team_size || 'small',
+        additionalContext: allAnswers.description || ''
       };
 
       // Check if backend API is available
@@ -110,13 +111,13 @@ function BusinessTechAdvisor() {
       setAnalysisResults({
         ...localResults,
         userAnalysis: {
-          businessName: allAnswers.businessName || 'Your Business',
-          businessType: allAnswers.industry || 'General Business',
-          mainChallenge: allAnswers.challenges || 'Growth and efficiency',
-          techLevel: allAnswers.size || 'Small team',
-          budget: allAnswers.budget || 'Medium',
-          timeline: allAnswers.timeline || '3-6 months',
-          teamSize: allAnswers.size
+          businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
+          businessType: allAnswers.business || 'General Business',
+          mainChallenge: allAnswers.challenge || 'Growth and efficiency',
+          techLevel: allAnswers.tech_level || 'basic',
+          budget: allAnswers.budget || 'medium',
+          timeline: '3-6 months',
+          teamSize: allAnswers.team_size || 'small'
         },
         apiAvailable: false
       });

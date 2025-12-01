@@ -4,17 +4,26 @@ import { technologies } from '../data/technologies.js';
 export function analyzeAnswers(answers) {
     const scores = {};
 
+    // Map quiz field names to analysis field names
+    const mappedAnswers = {
+        business: answers.business,
+        challenge: answers.challenge,
+        tech_level: answers.tech_level,
+        budget: answers.budget,
+        team_size: answers.team_size
+    };
+
     // Score each technology based on answers
     for (const [key, tech] of Object.entries(technologies)) {
         let score = 0;
 
         // Business type fit (25 points)
-        if (tech.best_for.includes(answers.business)) {
+        if (tech.best_for && tech.best_for.includes(mappedAnswers.business)) {
             score += 25;
         }
 
         // Challenge relevance (30 points)
-        if (answers.challenge && tech.category) {
+        if (mappedAnswers.challenge && tech.category) {
             // Map challenges to categories
             const challengeToCategory = {
                 'customers': 'Marketing',
@@ -29,17 +38,17 @@ export function analyzeAnswers(answers) {
                 'compliance': 'Management & Productivity'
             };
 
-            const relevantCategories = Array.isArray(challengeToCategory[answers.challenge])
-                ? challengeToCategory[answers.challenge]
-                : [challengeToCategory[answers.challenge]];
+            const relevantCategories = Array.isArray(challengeToCategory[mappedAnswers.challenge])
+                ? challengeToCategory[mappedAnswers.challenge]
+                : [challengeToCategory[mappedAnswers.challenge]];
 
-            if (relevantCategories.some(cat => tech.category.includes(cat))) {
+            if (relevantCategories.some(cat => tech.category && tech.category.includes(cat))) {
                 score += 30;
             }
         }
 
         // Tech level compatibility (20 points)
-        if (answers.tech_level) {
+        if (mappedAnswers.tech_level && tech.complexity) {
             const techLevelScores = {
                 'no_tech': { 'נמוכה': 20, 'בינונית': 5 },
                 'basic': { 'נמוכה': 20, 'בינונית': 15 },
@@ -47,30 +56,32 @@ export function analyzeAnswers(answers) {
                 'advanced': { 'בינונית': 20, 'גבוהה': 20 }
             };
 
-            score += techLevelScores[answers.tech_level]?.[tech.complexity] || 0;
+            score += techLevelScores[mappedAnswers.tech_level]?.[tech.complexity] || 0;
         }
 
         // Budget fit (20 points)
-        if (answers.budget) {
-            const budgetFit = checkBudgetFit(answers.budget, tech.pricing);
+        if (mappedAnswers.budget && tech.pricing) {
+            const budgetFit = checkBudgetFit(mappedAnswers.budget, tech.pricing);
             score += budgetFit * 20;
         }
 
         // Team size fit (10 points)
-        if (answers.team_size) {
+        if (mappedAnswers.team_size) {
             const scalability = {
                 'solo': 1,
                 'small': 1,
                 'medium': 0.8,
                 'large': 0.6
             };
-            score += (scalability[answers.team_size] || 0.5) * 10;
+            score += (scalability[mappedAnswers.team_size] || 0.5) * 10;
         }
 
         // Implementation speed bonus (10 points)
-        const setupTime = parseInt(tech.setup);
-        if (setupTime <= 4) {
-            score += 10;
+        if (tech.setup) {
+            const setupTime = parseInt(tech.setup);
+            if (setupTime <= 4) {
+                score += 10;
+            }
         }
 
         // Add to scores
