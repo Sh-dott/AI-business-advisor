@@ -292,58 +292,82 @@ function ResultsView({ results, onReset }) {
         </div>
 
         <div className="results-grid">
-          {recommendations.map((rec, idx) => (
-            <div key={idx} className="recommendation-card fade-in-up">
-              <div className="rec-header">
-                <div>
-                  <div className="rec-title">{rec.name}</div>
-                  <div className="rec-category">{rec.category}</div>
-                </div>
-                <div className="priority-badge">{rec.priority}</div>
-              </div>
-
-              <p className="rec-description">{rec.description}</p>
-
-              <ul className="factors">
-                {rec.factors.map((f, i) => (
-                  <li key={i}>{f}</li>
-                ))}
-              </ul>
-
-              <div className="step-list">
-                <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 12 }}>
-                  📋 תוכנית יישום:
-                </div>
-                {rec.steps.map((step, i) => (
-                  <div key={i} className="step-item">
-                    <div className="step-number">{i + 1}</div>
-                    <div className="step-content">
-                      <p>{step}</p>
+          {recommendations && recommendations.length > 0 ? (
+            recommendations.map((rec, idx) => {
+              // Skip if not a valid recommendation object
+              if (!rec || !rec.name || !rec.category) {
+                return null;
+              }
+              return (
+                <div key={idx} className="recommendation-card fade-in-up">
+                  <div className="rec-header">
+                    <div>
+                      <div className="rec-title">{rec.name}</div>
+                      <div className="rec-category">{rec.category}</div>
                     </div>
+                    <div className="priority-badge">{rec.priority}</div>
                   </div>
-                ))}
-              </div>
 
-              <div className="rec-meta">
-                <div className="meta-item">
-                  <span>💰</span>
-                  <span>{rec.pricing}</span>
-                </div>
-                <div className="meta-item">
-                  <span>⏱️</span>
-                  <span>{rec.setup}</span>
-                </div>
-                <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
-                  <span>📊</span>
-                  <span>מורכבות: {rec.complexity}</span>
-                </div>
-              </div>
+                  <p className="rec-description">{rec.description}</p>
 
-              <a href={rec.link} target="_blank" rel="noopener noreferrer" className="rec-link">
-                בקר באתר ➜
-              </a>
+                  {rec.factors && (
+                    <ul className="factors">
+                      {rec.factors.map((f, i) => (
+                        <li key={i}>{f}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {rec.steps && (
+                    <div className="step-list">
+                      <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 12 }}>
+                        📋 תוכנית יישום:
+                      </div>
+                      {rec.steps.map((step, i) => (
+                        <div key={i} className="step-item">
+                          <div className="step-number">{i + 1}</div>
+                          <div className="step-content">
+                            <p>{step}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="rec-meta">
+                    {rec.pricing && (
+                      <div className="meta-item">
+                        <span>💰</span>
+                        <span>{rec.pricing}</span>
+                      </div>
+                    )}
+                    {rec.setup && (
+                      <div className="meta-item">
+                        <span>⏱️</span>
+                        <span>{rec.setup}</span>
+                      </div>
+                    )}
+                    {rec.complexity && (
+                      <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
+                        <span>📊</span>
+                        <span>מורכבות: {rec.complexity}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {rec.link && (
+                    <a href={rec.link} target="_blank" rel="noopener noreferrer" className="rec-link">
+                      בקר באתר ➜
+                    </a>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#666' }}>
+              <p>אין מלצות זמינות. אנא נסה שוב עם תשובות שונות.</p>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Export Program Component */}
