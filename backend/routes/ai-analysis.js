@@ -2,14 +2,20 @@ const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
 
-// Initialize OpenAI client
+// Initialize OpenRouter client (compatible with OpenAI SDK)
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+  defaultHeaders: {
+    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+    'X-Title': 'AI Business Advisor'
+  }
 });
 
 /**
  * POST /api/ai-analysis/recommend
  * Analyzes user business needs and generates AI-powered technology recommendations
+ * Uses OpenRouter for free access to multiple AI models
  *
  * Body:
  * {
@@ -59,7 +65,7 @@ router.post('/recommend', async (req, res) => {
       });
     }
 
-    // Build the prompt for OpenAI
+    // Build the prompt for AI
     const challengesList = Array.isArray(challenges)
       ? challenges.join(', ')
       : String(challenges || 'general growth');
@@ -103,9 +109,9 @@ Make recommendations that are:
 4. Popular and well-supported tools
 5. Complementary (not redundant)`;
 
-    // Call OpenAI API
+    // Call OpenRouter API (compatible with OpenAI format)
     const message = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'mistralai/mistral-7b-instruct:free', // Free model on OpenRouter
       max_tokens: 2000,
       messages: [
         {
@@ -115,7 +121,7 @@ Make recommendations that are:
       ]
     });
 
-    // Extract the response text from OpenAI format
+    // Extract the response text
     const responseText = message.choices[0].message.content;
 
     // Try to parse as JSON
@@ -128,7 +134,7 @@ Make recommendations that are:
       }
       analysisResult = JSON.parse(jsonMatch[0]);
     } catch (parseErr) {
-      console.error('Failed to parse OpenAI response:', responseText);
+      console.error('Failed to parse OpenRouter response:', responseText);
       return res.status(500).json({
         error: 'Failed to parse AI recommendations',
         details: parseErr.message
@@ -148,7 +154,7 @@ Make recommendations that are:
       success: true,
       recommendations: analysisResult.recommendations,
       analysis: analysisResult.analysis || 'Analysis completed',
-      source: 'ai'
+      source: 'openrouter'
     });
 
   } catch (error) {
