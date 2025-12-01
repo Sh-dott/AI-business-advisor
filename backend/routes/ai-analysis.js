@@ -104,8 +104,8 @@ Make recommendations that are:
 5. Complementary (not redundant)`;
 
     // Call OpenAI API
-    const message = await openai.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+    const message = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       max_tokens: 2000,
       messages: [
         {
@@ -115,8 +115,8 @@ Make recommendations that are:
       ]
     });
 
-    // Extract the response text
-    const responseText = message.content[0].text;
+    // Extract the response text from OpenAI format
+    const responseText = message.choices[0].message.content;
 
     // Try to parse as JSON
     let analysisResult;

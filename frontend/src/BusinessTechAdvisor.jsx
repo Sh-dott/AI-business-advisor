@@ -355,33 +355,31 @@ function ResultsView({ results, onReset }) {
 
                   <p className="rec-description">{String(rec.description || '')}</p>
 
-                  {rec.factors && Array.isArray(rec.factors) && (
+                  {rec.factors && Array.isArray(rec.factors) && rec.factors.length > 0 && (
                     <ul className="factors">
                       {rec.factors.map((f, i) => {
-                        if (typeof f !== 'string') {
-                          console.warn(`⚠️ Non-string factor at index ${i}:`, f);
+                        if (!f || typeof f !== 'string') {
                           return null;
                         }
-                        return <li key={i}>{f}</li>;
+                        return <li key={i}>{String(f).trim()}</li>;
                       })}
                     </ul>
                   )}
 
-                  {rec.steps && Array.isArray(rec.steps) && (
+                  {rec.steps && Array.isArray(rec.steps) && rec.steps.length > 0 && (
                     <div className="step-list">
                       <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 12 }}>
                         📋 תוכנית יישום:
                       </div>
                       {rec.steps.map((step, i) => {
-                        if (typeof step !== 'string') {
-                          console.warn(`⚠️ Non-string step at index ${i}:`, step);
+                        if (!step || typeof step !== 'string') {
                           return null;
                         }
                         return (
                           <div key={i} className="step-item">
                             <div className="step-number">{i + 1}</div>
                             <div className="step-content">
-                              <p>{step}</p>
+                              <p>{String(step).trim()}</p>
                             </div>
                           </div>
                         );
