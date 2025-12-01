@@ -330,8 +330,9 @@ class DocumentGenerator {
         })
       );
 
-      // Features
-      if (tech.matchingFactors && tech.matchingFactors.length > 0) {
+      // Features (handle both field names)
+      const factors = tech.matchingFactors || tech.factors || [];
+      if (factors && factors.length > 0) {
         paragraphs.push(
           new Paragraph({
             text: 'Why This Solution:',
@@ -339,11 +340,14 @@ class DocumentGenerator {
             spacing: { after: 100 }
           })
         );
-        paragraphs.push(...this.createBulletPoints(tech.matchingFactors));
+        paragraphs.push(...this.createBulletPoints(factors));
       }
 
-      // Implementation details
-      if (tech.implementationDetails) {
+      // Implementation details (handle both field name formats)
+      const complexity = tech.implementationDetails?.complexity || tech.complexity || 'Moderate';
+      const setupTime = tech.implementationDetails?.setupTime || tech.setup || 'Quick';
+
+      if (complexity || setupTime) {
         paragraphs.push(
           new Paragraph({
             text: 'Implementation:',
@@ -351,7 +355,7 @@ class DocumentGenerator {
             spacing: { before: 150, after: 100 }
           }),
           new Paragraph({
-            text: `Complexity: ${tech.implementationDetails.complexity || 'Moderate'} | Setup Time: ${tech.implementationDetails.setupTime || 'Quick'}`,
+            text: `Complexity: ${complexity} | Setup Time: ${setupTime}`,
             spacing: { after: 100 },
             italics: true
           })
@@ -370,9 +374,9 @@ class DocumentGenerator {
         );
       }
 
-      // Call to action
-      if (tech.website || tech.officialLink) {
-        const link = tech.website || tech.officialLink;
+      // Call to action (handle both field names)
+      const link = tech.website || tech.officialLink || tech.link;
+      if (link) {
         paragraphs.push(
           new Paragraph({
             text: `Learn More: ${link}`,

@@ -68,19 +68,22 @@ function BusinessTechAdvisor() {
     setAnalyzeError(null);
 
     try {
-      // Prepare user analysis data
+      // Get local recommendations first (these are used for display and export)
+      const localResults = analyzeAnswers(allAnswers);
+
+      // Prepare user analysis data with proper field names for backend
       const userAnalysis = {
         businessName: allAnswers.businessName || 'Your Business',
-        industry: allAnswers.industry,
-        size: allAnswers.size,
-        budget: allAnswers.budget,
-        primaryChallenges: allAnswers.challenges,
-        goals: allAnswers.goals,
-        timeline: allAnswers.timeline,
+        businessType: allAnswers.industry || 'General Business',  // Map: industry -> businessType
+        mainChallenge: allAnswers.challenges || 'Growth and efficiency',  // Map: challenges -> mainChallenge
+        techLevel: allAnswers.size || 'Small team',  // Map: size -> techLevel
+        budget: allAnswers.budget || 'Medium',
+        timeline: allAnswers.timeline || '3-6 months',
+        teamSize: allAnswers.size,
         additionalContext: allAnswers.additionalContext || ''
       };
 
-      // Call backend API for OpenAI-powered analysis
+      // Call backend API to test document generation
       const response = await fetch(`${API_URL}/export/program`, {
         method: 'POST',
         headers: {
@@ -88,17 +91,15 @@ function BusinessTechAdvisor() {
         },
         body: JSON.stringify({
           userAnalysis,
-          recommendations: [], // Backend will generate these
-          generateAnalysis: true // Signal that we want AI analysis
+          recommendations: localResults  // Send local results for document generation
         })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate AI analysis');
+        throw new Error('Failed to generate document');
       }
 
-      // For now, use local analysis as fallback and display it
-      const localResults = analyzeAnswers(allAnswers);
+      // Display local analysis results with user analysis attached for export
       setAnalysisResults({
         ...localResults,
         userAnalysis,
@@ -113,16 +114,16 @@ function BusinessTechAdvisor() {
         ...localResults,
         userAnalysis: {
           businessName: allAnswers.businessName || 'Your Business',
-          industry: allAnswers.industry,
-          size: allAnswers.size,
-          budget: allAnswers.budget,
-          primaryChallenges: allAnswers.challenges,
-          goals: allAnswers.goals,
-          timeline: allAnswers.timeline
+          businessType: allAnswers.industry || 'General Business',
+          mainChallenge: allAnswers.challenges || 'Growth and efficiency',
+          techLevel: allAnswers.size || 'Small team',
+          budget: allAnswers.budget || 'Medium',
+          timeline: allAnswers.timeline || '3-6 months',
+          teamSize: allAnswers.size
         },
         apiAvailable: false
       });
-      setAnalyzeError('Backend API unavailable - showing local recommendations');
+      setAnalyzeError('Backend API unavailable - showing local recommendations. You can still download documents.');
     } finally {
       setIsAnalyzing(false);
     }
