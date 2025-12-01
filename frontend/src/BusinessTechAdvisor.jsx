@@ -243,13 +243,25 @@ function BusinessTechAdvisor() {
 }
 
 function ResultsView({ results, onReset }) {
-  // Extract recommendations that are objects with proper structure
-  const recommendations = Array.isArray(results) && results.length > 0 && typeof results[0] === 'object'
-    ? results
-    : [];
+  // Extract recommendations - results now contains spread array + userAnalysis object
+  let recommendations = [];
+  let userAnalysis = {};
 
-  // Extract user analysis if it exists in results
-  const userAnalysis = results.userAnalysis || {};
+  if (results) {
+    // Extract userAnalysis from results object
+    userAnalysis = results.userAnalysis || {};
+
+    // Get all recommendations (they are spread into results as indices)
+    // Filter to get only the recommendation objects (have 'name' property)
+    if (Array.isArray(results)) {
+      recommendations = results;
+    } else {
+      // If results is an object, extract array items by filtering
+      recommendations = Object.values(results).filter(item =>
+        item && typeof item === 'object' && item.name && item.category
+      );
+    }
+  }
 
   return (
     <div className="advisor-container">
