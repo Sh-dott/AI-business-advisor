@@ -71,6 +71,12 @@ function BusinessTechAdvisor() {
       // Get local recommendations first (these are used for display and export)
       const localResults = analyzeAnswers(allAnswers);
 
+      console.log('🔍 Analysis Debug:');
+      console.log('  localResults:', localResults);
+      console.log('  localResults type:', Array.isArray(localResults) ? 'Array' : 'Object');
+      console.log('  localResults length:', localResults?.length);
+      console.log('  allAnswers:', allAnswers);
+
       // Prepare user analysis data with proper field names for backend
       // Map quiz field names to backend field names
       const userAnalysis = {
@@ -97,19 +103,23 @@ function BusinessTechAdvisor() {
         apiAvailable = false;
       }
 
-      // Display local analysis results with user analysis attached for export
-      setAnalysisResults({
-        ...localResults,
+      // Store results as array - don't spread it!
+      const resultsToSet = {
+        recommendations: localResults,
         userAnalysis,
         hasAIAnalysis: false,
         apiAvailable: apiAvailable
-      });
+      };
+
+      console.log('📊 Results being set:', resultsToSet);
+
+      setAnalysisResults(resultsToSet);
     } catch (err) {
       console.error('AI Analysis error:', err);
       // Fallback to local analysis if API fails
       const localResults = analyzeAnswers(allAnswers);
       setAnalysisResults({
-        ...localResults,
+        recommendations: localResults,
         userAnalysis: {
           businessName: allAnswers.description ? allAnswers.description.substring(0, 50) : 'Your Business',
           businessType: allAnswers.business || 'General Business',
@@ -244,26 +254,21 @@ function BusinessTechAdvisor() {
 }
 
 function ResultsView({ results, onReset }) {
-  // Extract recommendations - results now contains spread array + userAnalysis object
+  // Extract recommendations and userAnalysis from results object
   let recommendations = [];
   let userAnalysis = {};
 
   if (results) {
+    console.log('📋 ResultsView received:', results);
+
+    // Get recommendations array directly
+    recommendations = results.recommendations || [];
+
     // Extract userAnalysis from results object
     userAnalysis = results.userAnalysis || {};
 
-    // Get all recommendations (they are spread into results as indices)
-    // Filter to get only the recommendation objects (have 'name' property)
-    if (Array.isArray(results)) {
-      recommendations = results;
-    } else {
-      // If results is an object, extract array items by filtering
-      // Look for numeric indices (0, 1, 2, 3...) which contain recommendation objects
-      recommendations = Object.keys(results)
-        .filter(key => /^\d+$/.test(key)) // Only numeric keys
-        .map(key => results[key])
-        .filter(item => item && typeof item === 'object');
-    }
+    console.log('✅ Extracted recommendations:', recommendations);
+    console.log('✅ Extracted userAnalysis:', userAnalysis);
   }
 
   return (
