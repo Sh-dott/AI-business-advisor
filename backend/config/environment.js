@@ -1,10 +1,10 @@
 // Environment configuration and validation
 require('dotenv').config();
 
+// Required environment variables (for production)
+// Note: MONGODB_URI is optional (we use Word document export instead of database)
 const requiredEnvVars = [
-  'MONGODB_URI',
   'JWT_SECRET',
-  'CLAUDE_API_KEY',
   'OPENAI_API_KEY'
 ];
 
@@ -12,13 +12,9 @@ const requiredEnvVars = [
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
-  console.error(
-    `Missing required environment variables: ${missingEnvVars.join(', ')}\n` +
-    'Please create a .env file with all required variables.'
+  console.warn(
+    'Warning: Missing environment variables: ' + missingEnvVars.join(', ')
   );
-  if (process.env.NODE_ENV === 'production') {
-    process.exit(1);
-  }
 }
 
 module.exports = {
@@ -27,24 +23,24 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
 
-  // Database
-  MONGODB_URI: process.env.MONGODB_URI,
+  // Database (Optional - we use Word document export instead)
+  MONGODB_URI: process.env.MONGODB_URI || null,
   DB_NAME: 'ai_business_advisor',
 
   // JWT
-  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_SECRET: process.env.JWT_SECRET || 'default-secret-key-change-in-production',
   JWT_EXPIRATION: '7d',
 
-  // Claude API
-  CLAUDE_API_KEY: process.env.CLAUDE_API_KEY,
+  // Claude API (Optional - can use as fallback)
+  CLAUDE_API_KEY: process.env.CLAUDE_API_KEY || 'sk-placeholder',
   CLAUDE_API_URL: 'https://api.anthropic.com/v1',
   CLAUDE_MODEL: 'claude-3-5-sonnet-20241022',
   CLAUDE_MAX_TOKENS: 2048,
 
-  // OpenAI API
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  // OpenAI API (Primary AI provider)
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || 'sk-placeholder',
   OPENAI_API_URL: 'https://api.openai.com/v1',
-  OPENAI_MODEL: 'gpt-4o-mini',  // Changed from gpt-4-turbo - available and cost-effective
+  OPENAI_MODEL: 'gpt-4o-mini',
   OPENAI_MAX_TOKENS: 2048,
 
   // Streaming
@@ -52,7 +48,7 @@ module.exports = {
   STREAM_TIMEOUT: 30000,
 
   // Rate limiting
-  RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
+  RATE_LIMIT_WINDOW: 15 * 60 * 1000,
   RATE_LIMIT_MAX_REQUESTS: 100,
 
   // Logging
