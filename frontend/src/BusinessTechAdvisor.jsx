@@ -327,12 +327,14 @@ function ResultsView({ results, onReset }) {
 
         <div className="results-grid">
           {recommendations && recommendations.length > 0 ? (
-            recommendations.map((rec, idx) => {
-              // Skip if not a valid recommendation object
-              if (!rec || !rec.name || !rec.category) {
-                return null;
-              }
-              return (
+            (() => {
+              try {
+                return recommendations.map((rec, idx) => {
+                  // Skip if not a valid recommendation object
+                  if (!rec || !rec.name || !rec.category) {
+                    return null;
+                  }
+                  return (
                 <div key={idx} className="recommendation-card fade-in-up">
                   <div className="rec-header">
                     <div>
@@ -415,7 +417,17 @@ function ResultsView({ results, onReset }) {
                   )}
                 </div>
               );
-            })
+                });
+              } catch (err) {
+                console.error('❌ ERROR DURING RENDER:', err);
+                console.error('Stack:', err.stack);
+                return (
+                  <div style={{ gridColumn: '1 / -1', padding: '20px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '4px' }}>
+                    <p>❌ Rendering Error: {err.message}</p>
+                  </div>
+                );
+              }
+            })()
           ) : (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#666' }}>
               <p>אין מלצות זמינות. אנא נסה שוב עם תשובות שונות.</p>
