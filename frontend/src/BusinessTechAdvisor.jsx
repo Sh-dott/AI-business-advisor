@@ -311,7 +311,7 @@ function ResultsView({ results, onReset }) {
           )}
           {results.analysis && (
             <p style={{ color: '#666', fontSize: 13, marginTop: 12, fontStyle: 'italic' }}>
-              {results.analysis}
+              {String(results.analysis)}
             </p>
           )}
         </div>
