@@ -15,22 +15,30 @@ const openai = new OpenAI({
 /**
  * Sanitize recommendation object to ensure all fields are primitive types
  * This prevents React "Objects are not valid as React child" errors
+ * Recursively sanitizes nested structures
  */
+function sanitizeValue(value) {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (Array.isArray(value)) {
+    return value
+      .map(item => sanitizeValue(item))
+      .filter(item => item !== '' && item !== null && item !== undefined);
+  }
+  if (typeof value === 'object') {
+    // For objects, convert to string representation
+    return String(value);
+  }
+  return String(value).trim();
+}
+
 function sanitizeRecommendation(rec) {
   if (!rec || typeof rec !== 'object') return rec;
 
   const sanitized = {};
   for (const [key, value] of Object.entries(rec)) {
-    if (Array.isArray(value)) {
-      // Ensure all array items are strings
-      sanitized[key] = value.map(item => String(item).trim()).filter(Boolean);
-    } else if (typeof value === 'object' && value !== null) {
-      // Convert objects to strings
-      sanitized[key] = String(value);
-    } else {
-      // Keep primitives as-is but convert to string
-      sanitized[key] = String(value).trim();
-    }
+    sanitized[key] = sanitizeValue(value);
   }
   return sanitized;
 }
