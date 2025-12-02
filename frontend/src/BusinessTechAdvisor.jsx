@@ -327,10 +327,10 @@ function ResultsView({ results, onReset }) {
                 <div key={idx} className="recommendation-card fade-in-up">
                   <div className="rec-header">
                     <div>
-                      <div className="rec-title">{rec.name}</div>
-                      <div className="rec-category">{rec.category}</div>
+                      <div className="rec-title">{String(rec.name || '')}</div>
+                      <div className="rec-category">{String(rec.category || '')}</div>
                     </div>
-                    <div className="priority-badge">{rec.priority}</div>
+                    <div className="priority-badge">{String(rec.priority || '')}</div>
                   </div>
 
                   <p className="rec-description">{String(rec.description || '')}</p>
@@ -382,25 +382,25 @@ function ResultsView({ results, onReset }) {
                     {rec.pricing && (
                       <div className="meta-item">
                         <span>💰</span>
-                        <span>{rec.pricing}</span>
+                        <span>{String(rec.pricing)}</span>
                       </div>
                     )}
                     {rec.setup && (
                       <div className="meta-item">
                         <span>⏱️</span>
-                        <span>{rec.setup}</span>
+                        <span>{String(rec.setup)}</span>
                       </div>
                     )}
                     {rec.complexity && (
                       <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
                         <span>📊</span>
-                        <span>מורכבות: {rec.complexity}</span>
+                        <span>מורכבות: {String(rec.complexity)}</span>
                       </div>
                     )}
                   </div>
 
-                  {rec.link && (
-                    <a href={rec.link} target="_blank" rel="noopener noreferrer" className="rec-link">
+                  {rec.link && String(rec.link).length > 0 && (
+                    <a href={String(rec.link)} target="_blank" rel="noopener noreferrer" className="rec-link">
                       בקר באתר ➜
                     </a>
                   )}
