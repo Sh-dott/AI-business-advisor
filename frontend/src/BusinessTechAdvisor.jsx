@@ -249,21 +249,22 @@ function BusinessTechAdvisor() {
 }
 
 function ResultsView({ results, onReset }) {
-  // Extract recommendations and userAnalysis from results object
-  let recommendations = [];
-  let userAnalysis = {};
+  try {
+    // Extract recommendations and userAnalysis from results object
+    let recommendations = [];
+    let userAnalysis = {};
 
-  if (results) {
-    console.log('📋 ResultsView received:', results);
+    if (results) {
+      console.log('📋 ResultsView received:', results);
 
-    // Get recommendations array directly
-    recommendations = results.recommendations || [];
+      // Get recommendations array directly
+      recommendations = results.recommendations || [];
 
-    // Extract userAnalysis from results object
-    userAnalysis = results.userAnalysis || {};
+      // Extract userAnalysis from results object
+      userAnalysis = results.userAnalysis || {};
 
-    console.log('✅ Extracted recommendations:', recommendations);
-    console.log('✅ Extracted userAnalysis:', userAnalysis);
+      console.log('✅ Extracted recommendations:', recommendations);
+      console.log('✅ Extracted userAnalysis:', userAnalysis);
 
     // Debug: Check each recommendation for React elements (deep check)
     if (recommendations && Array.isArray(recommendations)) {
@@ -449,7 +450,24 @@ function ResultsView({ results, onReset }) {
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (err) {
+    console.error('❌ RESULTS VIEW ERROR:', err);
+    console.error('Error message:', err.message);
+    console.error('Stack:', err.stack);
+    return (
+      <div style={{ padding: '40px', backgroundColor: '#ffebee', color: '#c62828', fontFamily: 'sans-serif' }}>
+        <h2>❌ Error Loading Results</h2>
+        <p><strong>Error:</strong> {err.message}</p>
+        <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', overflowX: 'auto', fontSize: '12px' }}>
+          {err.stack}
+        </pre>
+        <button onClick={onReset} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+          Try Again
+        </button>
+      </div>
+    );
+  }
 }
 
 export default BusinessTechAdvisor;
