@@ -335,15 +335,26 @@ function ResultsView({ results, onReset }) {
 
                   <p className="rec-description">{String(rec.description || '')}</p>
 
-                  {rec.factors && Array.isArray(rec.factors) && rec.factors.length > 0 && (
-                    <ul className="factors">
-                      {rec.factors.map((f, i) => {
-                        if (!f || typeof f !== 'string') {
-                          return null;
-                        }
-                        return <li key={i}>{String(f).trim()}</li>;
-                      })}
-                    </ul>
+                  {rec.why && (
+                    <p style={{ color: '#555', fontSize: 14, marginTop: 12, fontStyle: 'italic', marginBottom: 16 }}>
+                      💡 {String(rec.why)}
+                    </p>
+                  )}
+
+                  {rec.benefits && Array.isArray(rec.benefits) && rec.benefits.length > 0 && (
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 8 }}>
+                        ✨ יתרונות:
+                      </div>
+                      <ul className="factors">
+                        {rec.benefits.map((b, i) => {
+                          if (!b || typeof b !== 'string') {
+                            return null;
+                          }
+                          return <li key={i}>{String(b).trim()}</li>;
+                        })}
+                      </ul>
+                    </div>
                   )}
 
                   {rec.steps && Array.isArray(rec.steps) && rec.steps.length > 0 && (
