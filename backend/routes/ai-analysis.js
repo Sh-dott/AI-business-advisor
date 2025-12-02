@@ -3,8 +3,9 @@ const router = express.Router();
 const { OpenAI } = require('openai');
 
 // Initialize GitHub Models client (compatible with OpenAI SDK)
+// Explicitly pass the API key to avoid default OPENAI_API_KEY lookup
 const openai = new OpenAI({
-  apiKey: process.env.GITHUB_MODELS_API_KEY,
+  apiKey: process.env.GITHUB_MODELS_API_KEY || 'sk-placeholder',
   baseURL: 'https://models.inference.ai.azure.com',
   defaultHeaders: {
     'User-Agent': 'AI Business Advisor'
@@ -47,6 +48,15 @@ const openai = new OpenAI({
  */
 router.post('/recommend', async (req, res) => {
   try {
+    // Validate API key is present
+    if (!process.env.GITHUB_MODELS_API_KEY) {
+      return res.status(500).json({
+        error: 'AI API not configured',
+        message: 'GITHUB_MODELS_API_KEY environment variable is missing',
+        details: 'Please configure GitHub Models API key on the server'
+      });
+    }
+
     const {
       businessName,
       businessType,
