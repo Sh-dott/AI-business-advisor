@@ -13,6 +13,29 @@ const openai = new OpenAI({
 });
 
 /**
+ * Sanitize recommendation object to ensure all fields are primitive types
+ * This prevents React "Objects are not valid as React child" errors
+ */
+function sanitizeRecommendation(rec) {
+  if (!rec || typeof rec !== 'object') return rec;
+
+  const sanitized = {};
+  for (const [key, value] of Object.entries(rec)) {
+    if (Array.isArray(value)) {
+      // Ensure all array items are strings
+      sanitized[key] = value.map(item => String(item).trim()).filter(Boolean);
+    } else if (typeof value === 'object' && value !== null) {
+      // Convert objects to strings
+      sanitized[key] = String(value);
+    } else {
+      // Keep primitives as-is but convert to string
+      sanitized[key] = String(value).trim();
+    }
+  }
+  return sanitized;
+}
+
+/**
  * POST /api/ai-analysis/recommend
  * Analyzes user business needs and generates AI-powered technology recommendations
  * Uses GitHub Models for free AI-powered recommendations
@@ -158,11 +181,16 @@ Make recommendations that are:
       });
     }
 
+    // Sanitize all recommendations to ensure they're safe for React rendering
+    const sanitizedRecommendations = analysisResult.recommendations
+      .filter(rec => rec && rec.name && rec.category) // Filter out invalid entries
+      .map(sanitizeRecommendation);
+
     // Return the AI-generated recommendations
     res.json({
       success: true,
-      recommendations: analysisResult.recommendations,
-      analysis: analysisResult.analysis || 'Analysis completed',
+      recommendations: sanitizedRecommendations,
+      analysis: String(analysisResult.analysis || 'Analysis completed').trim(),
       source: 'github-models'
     });
 
