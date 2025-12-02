@@ -265,15 +265,24 @@ function ResultsView({ results, onReset }) {
     console.log('✅ Extracted recommendations:', recommendations);
     console.log('✅ Extracted userAnalysis:', userAnalysis);
 
-    // Debug: Check each recommendation for React elements
+    // Debug: Check each recommendation for React elements (deep check)
     if (recommendations && Array.isArray(recommendations)) {
       recommendations.forEach((rec, idx) => {
         console.log(`📦 Recommendation ${idx}:`, rec);
         if (rec) {
           Object.keys(rec).forEach(key => {
             const val = rec[key];
+            // Check direct values
             if (val && typeof val === 'object' && val.$$typeof) {
               console.error(`❌ FOUND REACT ELEMENT at rec[${idx}].${key}:`, val);
+            }
+            // Check array items
+            if (Array.isArray(val)) {
+              val.forEach((item, itemIdx) => {
+                if (item && typeof item === 'object' && item.$$typeof) {
+                  console.error(`❌ FOUND REACT ELEMENT in array at rec[${idx}].${key}[${itemIdx}]:`, item);
+                }
+              });
             }
           });
         }
