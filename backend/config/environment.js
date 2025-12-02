@@ -5,7 +5,7 @@ require('dotenv').config();
 // Note: MONGODB_URI is optional (we use Word document export instead of database)
 const requiredEnvVars = [
   'JWT_SECRET',
-  'OPENROUTER_API_KEY' // Changed from OPENAI_API_KEY to OPENROUTER_API_KEY
+  'GITHUB_MODELS_API_KEY' // GitHub Models free API
 ];
 
 // Check required environment variables
@@ -31,11 +31,11 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET || 'default-secret-key-change-in-production',
   JWT_EXPIRATION: '7d',
 
-  // OpenRouter API (Primary AI provider - FREE!)
-  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || 'sk-or-placeholder',
-  OPENROUTER_API_URL: 'https://openrouter.ai/api/v1',
-  OPENROUTER_MODEL: 'mistralai/mistral-7b-instruct:free', // Free model
-  OPENROUTER_MAX_TOKENS: 2048,
+  // GitHub Models API (Primary AI provider - FREE!)
+  GITHUB_MODELS_API_KEY: process.env.GITHUB_MODELS_API_KEY || 'sk-placeholder',
+  GITHUB_MODELS_API_URL: 'https://models.inference.ai.azure.com',
+  GITHUB_MODELS_MODEL: 'gpt-4o-mini', // Free model on GitHub
+  GITHUB_MODELS_MAX_TOKENS: 2048,
 
   // Claude API (Optional - can use as fallback)
   CLAUDE_API_KEY: process.env.CLAUDE_API_KEY || 'sk-placeholder',

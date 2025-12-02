@@ -2,20 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
 
-// Initialize OpenRouter client (compatible with OpenAI SDK)
+// Initialize GitHub Models client (compatible with OpenAI SDK)
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.GITHUB_MODELS_API_KEY,
+  baseURL: 'https://models.inference.ai.azure.com',
   defaultHeaders: {
-    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
-    'X-Title': 'AI Business Advisor'
+    'User-Agent': 'AI Business Advisor'
   }
 });
 
 /**
  * POST /api/ai-analysis/recommend
  * Analyzes user business needs and generates AI-powered technology recommendations
- * Uses OpenRouter for free access to multiple AI models
+ * Uses GitHub Models for free AI-powered recommendations
  *
  * Body:
  * {
@@ -109,9 +108,9 @@ Make recommendations that are:
 4. Popular and well-supported tools
 5. Complementary (not redundant)`;
 
-    // Call OpenRouter API (compatible with OpenAI format)
+    // Call GitHub Models API (compatible with OpenAI format)
     const message = await openai.chat.completions.create({
-      model: 'mistralai/mistral-7b-instruct:free', // Free model on OpenRouter
+      model: 'gpt-4o-mini', // Available on GitHub Models
       max_tokens: 2000,
       messages: [
         {
@@ -134,7 +133,7 @@ Make recommendations that are:
       }
       analysisResult = JSON.parse(jsonMatch[0]);
     } catch (parseErr) {
-      console.error('Failed to parse OpenRouter response:', responseText);
+      console.error('Failed to parse GitHub Models response:', responseText);
       return res.status(500).json({
         error: 'Failed to parse AI recommendations',
         details: parseErr.message
@@ -154,7 +153,7 @@ Make recommendations that are:
       success: true,
       recommendations: analysisResult.recommendations,
       analysis: analysisResult.analysis || 'Analysis completed',
-      source: 'openrouter'
+      source: 'github-models'
     });
 
   } catch (error) {
