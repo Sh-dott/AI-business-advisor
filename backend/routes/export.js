@@ -3,6 +3,40 @@ const router = express.Router();
 const documentGenerator = require('../services/document-generator');
 
 /**
+ * Normalize recommendation data from AI API format to document generator format
+ * Maps AI response fields to expected document generator fields
+ */
+function normalizeRecommendation(rec) {
+  if (!rec) return null;
+
+  return {
+    // Core fields
+    name: rec.name || '',
+    category: rec.category || '',
+    description: rec.description || rec.why || '',
+    priority: rec.priority || 'Medium',
+    pricing: rec.pricing || '',
+
+    // Map AI 'benefits' to 'factors' for document generator
+    factors: Array.isArray(rec.benefits) ? rec.benefits :
+             Array.isArray(rec.matchingFactors) ? rec.matchingFactors : [],
+
+    // Map 'setup' to 'setup' (already matches)
+    setup: rec.setup || rec.setupTime || 'Quick',
+
+    // Handle complexity
+    complexity: rec.complexity || 'Moderate',
+
+    // Link/website mapping
+    link: rec.link || rec.website || '',
+    website: rec.link || rec.website || '',
+
+    // Keep original fields as fallback
+    ...rec
+  };
+}
+
+/**
  * POST /api/export/program
  * Generates a customized Word document business program
  *
@@ -21,10 +55,10 @@ const documentGenerator = require('../services/document-generator');
  *     name: string,
  *     priority: string,
  *     description: string,
- *     matchingFactors: string[],
- *     implementationDetails: { complexity, setupTime },
+ *     benefits: string[] (or matchingFactors),
+ *     setup: string (or setupTime),
  *     pricing: string,
- *     website: string
+ *     link: string (or website)
  *   }]
  * }
  *
@@ -41,10 +75,21 @@ router.post('/program', async (req, res) => {
       });
     }
 
+    // Normalize recommendations to expected format
+    const normalizedRecommendations = recommendations
+      .map(normalizeRecommendation)
+      .filter(rec => rec && rec.name); // Filter out invalid entries
+
+    if (normalizedRecommendations.length === 0) {
+      return res.status(400).json({
+        error: 'No valid recommendations provided'
+      });
+    }
+
     // Generate the document
     const doc = await documentGenerator.generateBusinessProgram(
       userAnalysis,
-      recommendations
+      normalizedRecommendations
     );
 
     // Convert to buffer
@@ -60,6 +105,10 @@ router.post('/program', async (req, res) => {
     res.send(buffer);
   } catch (error) {
     console.error('Document generation error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack
+    });
     res.status(500).json({
       error: 'Failed to generate document',
       message: error.message
@@ -81,10 +130,22 @@ router.post('/summary', async (req, res) => {
       });
     }
 
-    // Generate shorter version (just recommendations and quick action plan)
+    // Normalize recommendations to expected format
+    const normalizedRecommendations = recommendations
+      .slice(0, 4) // Top 4 recommendations only
+      .map(normalizeRecommendation)
+      .filter(rec => rec && rec.name); // Filter out invalid entries
+
+    if (normalizedRecommendations.length === 0) {
+      return res.status(400).json({
+        error: 'No valid recommendations provided'
+      });
+    }
+
+    // Generate shorter version
     const doc = await documentGenerator.generateBusinessProgram(
       userAnalysis,
-      recommendations.slice(0, 4) // Top 4 recommendations only
+      normalizedRecommendations
     );
 
     const buffer = await documentGenerator.getDocumentBuffer(doc);
@@ -97,6 +158,10 @@ router.post('/summary', async (req, res) => {
     res.send(buffer);
   } catch (error) {
     console.error('Summary generation error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack
+    });
     res.status(500).json({
       error: 'Failed to generate summary',
       message: error.message
