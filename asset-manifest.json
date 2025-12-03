@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/AI-business-advisor/static/css/main.c034c233.css",
+    "main.css": "/AI-business-advisor/static/css/main.fc83e573.css",
     "main.js": "/AI-business-advisor/static/js/main.3849b4a0.js",
     "index.html": "/AI-business-advisor/index.html",
-    "main.c034c233.css.map": "/AI-business-advisor/static/css/main.c034c233.css.map",
+    "main.fc83e573.css.map": "/AI-business-advisor/static/css/main.fc83e573.css.map",
     "main.3849b4a0.js.map": "/AI-business-advisor/static/js/main.3849b4a0.js.map"
   },
   "entrypoints": [
-    "static/css/main.c034c233.css",
+    "static/css/main.fc83e573.css",
     "static/js/main.3849b4a0.js"
   ]
 }
