@@ -157,6 +157,12 @@
     "quick_summary_button": "Download Summary",
     "generating": "Generating...",
     "success": "Downloaded successfully!",
-    "error": "Error downloading document"
+    "error": "Error downloading document",
+    "tips_title": "Tips for Using Your Document",
+    "tips_1": "Share with your team to align on technology strategy",
+    "tips_2": "Use the implementation roadmap for project planning",
+    "tips_3": "Track success metrics to measure impact",
+    "tips_4": "Review and adjust plan as you learn more",
+    "tips_5": "Keep the document as reference throughout implementation"
   }
 }

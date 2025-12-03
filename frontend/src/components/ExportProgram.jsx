@@ -192,18 +192,18 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
 
       {success && (
         <div className="export-success">
-          <p>✓ Document downloaded successfully!</p>
+          <p>✓ {t('export.success')}</p>
         </div>
       )}
 
       <div className="export-tips">
-        <h4>💡 Tips for Using Your Document:</h4>
+        <h4>💡 {t('export.tips_title')}</h4>
         <ul>
-          <li>Share with your team to align on technology strategy</li>
-          <li>Use the implementation roadmap for project planning</li>
-          <li>Track success metrics to measure impact</li>
-          <li>Review and adjust plan as you learn more</li>
-          <li>Keep the document as reference throughout implementation</li>
+          <li>{t('export.tips_1')}</li>
+          <li>{t('export.tips_2')}</li>
+          <li>{t('export.tips_3')}</li>
+          <li>{t('export.tips_4')}</li>
+          <li>{t('export.tips_5')}</li>
         </ul>
       </div>
     </div>

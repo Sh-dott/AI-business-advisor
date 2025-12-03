@@ -68,13 +68,13 @@ function BusinessTechAdvisor() {
         : answers;
 
       // Try to use backend API for AI-powered analysis
-      await performAIAnalysis(allAnswers);
+      await performAIAnalysis(allAnswers, language);
     } else {
       setCurrentStep(currentStep + 1);
     }
   };
 
-  const performAIAnalysis = async (allAnswers) => {
+  const performAIAnalysis = async (allAnswers, currentLanguage = 'en') => {
     setIsAnalyzing(true);
     setAnalyzeError(null);
 
@@ -87,7 +87,8 @@ function BusinessTechAdvisor() {
         budget: allAnswers.budget || 'medium',
         teamSize: allAnswers.team_size || 'small',
         techLevel: allAnswers.tech_level || 'basic',
-        description: allAnswers.description || 'Business needs technology solutions'
+        description: allAnswers.description || 'Business needs technology solutions',
+        language: currentLanguage
       };
 
       console.log('🤖 Sending to AI API:', aiRequestData);

@@ -9,7 +9,8 @@ import '../styles/recommendation-list.css';
  */
 const RecommendationList = ({ recommendations = [] }) => {
   const [expandedIndices, setExpandedIndices] = useState(new Set([0]));
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const dir = language === 'he' ? 'rtl' : 'ltr';
 
   const handleToggle = (index) => {
     setExpandedIndices((prev) => {
@@ -101,7 +102,7 @@ const RecommendationList = ({ recommendations = [] }) => {
                   {/* Benefits */}
                   {Array.isArray(benefits) && benefits.length > 0 && (
                     <div className="content-section">
-                      <h4 className="section-title">✓ {t('results.benefits')}</h4>
+                      <h4 className="section-title">{dir === 'rtl' ? `${t('results.benefits')} ✓` : `✓ ${t('results.benefits')}`}</h4>
                       <ul className="benefits-list">
                         {benefits.map((benefit, idx) => (
                           <li key={idx}>{benefit}</li>
@@ -113,15 +114,15 @@ const RecommendationList = ({ recommendations = [] }) => {
                   {/* Meta Information - Setup, Complexity, Pricing */}
                   <div className="meta-grid">
                     <div className="meta-item">
-                      <span className="meta-label">⏱️ {t('results.setup_time')}</span>
+                      <span className="meta-label">{dir === 'rtl' ? `${t('results.setup_time')} ⏱️` : `⏱️ ${t('results.setup_time')}`}</span>
                       <span className="meta-value">{setupTime}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">⚙️ {t('results.complexity')}</span>
+                      <span className="meta-label">{dir === 'rtl' ? `${t('results.complexity')} ⚙️` : `⚙️ ${t('results.complexity')}`}</span>
                       <span className="meta-value">{getComplexityLabel(complexity)}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">💰 {t('results.pricing')}</span>
+                      <span className="meta-label">{dir === 'rtl' ? `${t('results.pricing')} 💰` : `💰 ${t('results.pricing')}`}</span>
                       <span className="meta-value">{pricing}</span>
                     </div>
                   </div>
@@ -135,7 +136,7 @@ const RecommendationList = ({ recommendations = [] }) => {
                         rel="noopener noreferrer"
                         className="learn-more-button"
                       >
-                        {t('results.learn_more')} →
+                        {dir === 'rtl' ? `← ${t('results.learn_more')}` : `${t('results.learn_more')} →`}
                       </a>
                     </div>
                   )}

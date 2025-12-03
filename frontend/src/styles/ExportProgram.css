@@ -25,6 +25,7 @@
   color: #0070c0;
   margin-bottom: 15px;
   animation: bounce 2s infinite;
+  display: none;
 }
 
 @keyframes bounce {
