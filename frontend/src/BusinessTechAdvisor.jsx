@@ -3,6 +3,7 @@ import { questions } from './data/questions';
 import { technologies } from './data/technologies';
 import { analyzeAnswers } from './utils/analysis';
 import ExportProgram from './components/ExportProgram';
+import RecommendationTimeline from './components/RecommendationTimeline';
 import './index.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -326,115 +327,8 @@ function ResultsView({ results, onReset }) {
           )}
         </div>
 
-        <div className="results-grid">
-          {recommendations && recommendations.length > 0 ? (
-            (() => {
-              try {
-                return recommendations.map((rec, idx) => {
-                  // Skip if not a valid recommendation object
-                  if (!rec || !rec.name || !rec.category) {
-                    return null;
-                  }
-                  return (
-                <div key={idx} className="recommendation-card fade-in-up">
-                  <div className="rec-header">
-                    <div>
-                      <div className="rec-title">{String(rec.name || '')}</div>
-                      <div className="rec-category">{String(rec.category || '')}</div>
-                    </div>
-                    <div className="priority-badge">{String(rec.priority || '')}</div>
-                  </div>
-
-                  <p className="rec-description">{String(rec.description || '')}</p>
-
-                  {rec.why && (
-                    <p style={{ color: '#555', fontSize: 14, marginTop: 12, fontStyle: 'italic', marginBottom: 16 }}>
-                      💡 {String(rec.why)}
-                    </p>
-                  )}
-
-                  {rec.benefits && Array.isArray(rec.benefits) && rec.benefits.length > 0 && (
-                    <div style={{ marginBottom: 16 }}>
-                      <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 8 }}>
-                        ✨ יתרונות:
-                      </div>
-                      <ul className="factors">
-                        {rec.benefits.map((b, i) => {
-                          if (!b || typeof b !== 'string') {
-                            return null;
-                          }
-                          return <li key={i}>{String(b).trim()}</li>;
-                        })}
-                      </ul>
-                    </div>
-                  )}
-
-                  {rec.steps && Array.isArray(rec.steps) && rec.steps.length > 0 && (
-                    <div className="step-list">
-                      <div style={{ fontWeight: 600, color: 'var(--primary)', marginBottom: 12 }}>
-                        📋 תוכנית יישום:
-                      </div>
-                      {rec.steps.map((step, i) => {
-                        if (!step || typeof step !== 'string') {
-                          return null;
-                        }
-                        return (
-                          <div key={i} className="step-item">
-                            <div className="step-number">{i + 1}</div>
-                            <div className="step-content">
-                              <p>{String(step).trim()}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  <div className="rec-meta">
-                    {rec.pricing && (
-                      <div className="meta-item">
-                        <span>💰</span>
-                        <span>{String(rec.pricing)}</span>
-                      </div>
-                    )}
-                    {rec.setup && (
-                      <div className="meta-item">
-                        <span>⏱️</span>
-                        <span>{String(rec.setup)}</span>
-                      </div>
-                    )}
-                    {rec.complexity && (
-                      <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
-                        <span>📊</span>
-                        <span>מורכבות: {String(rec.complexity)}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {rec.link && String(rec.link).length > 0 && (
-                    <a href={String(rec.link)} target="_blank" rel="noopener noreferrer" className="rec-link">
-                      בקר באתר ➜
-                    </a>
-                  )}
-                </div>
-              );
-                });
-              } catch (err) {
-                console.error('❌ ERROR DURING RENDER:', err);
-                console.error('Stack:', err.stack);
-                return (
-                  <div style={{ gridColumn: '1 / -1', padding: '20px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '4px' }}>
-                    <p>❌ Rendering Error: {err.message}</p>
-                  </div>
-                );
-              }
-            })()
-          ) : (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#666' }}>
-              <p>אין מלצות זמינות. אנא נסה שוב עם תשובות שונות.</p>
-            </div>
-          )}
-        </div>
+        {/* Interactive Timeline Display */}
+        <RecommendationTimeline recommendations={recommendations} />
 
         {/* Export Program Component */}
         {Object.keys(userAnalysis).length > 0 && recommendations.length > 0 && (

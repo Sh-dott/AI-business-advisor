@@ -66,7 +66,7 @@ function normalizeRecommendation(rec) {
  */
 router.post('/program', async (req, res) => {
   try {
-    const { userAnalysis, recommendations } = req.body;
+    const { userAnalysis, recommendations, documentType = 'standard' } = req.body;
 
     // Validate required fields
     if (!userAnalysis || !recommendations || recommendations.length === 0) {
@@ -86,10 +86,11 @@ router.post('/program', async (req, res) => {
       });
     }
 
-    // Generate the document
+    // Generate the document with specified document type
     const doc = await documentGenerator.generateBusinessProgram(
       userAnalysis,
-      normalizedRecommendations
+      normalizedRecommendations,
+      documentType
     );
 
     // Convert to buffer

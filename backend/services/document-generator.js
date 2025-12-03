@@ -16,181 +16,77 @@ class DocumentGenerator {
   }
 
   /**
-   * Generate complete business program document
+   * Generate complete business program document with variable length support
+   * @param {Object} userAnalysis - User's business profile
+   * @param {Array} recommendations - Technology recommendations
+   * @param {string} documentType - 'summary' (5-10 pages), 'standard' (20-25 pages), 'comprehensive' (40-50 pages)
    */
-  async generateBusinessProgram(userAnalysis, recommendations) {
+  async generateBusinessProgram(userAnalysis, recommendations, documentType = 'standard') {
     try {
       const children = [];
 
-      // Title
+      // Validate document type
+      const validTypes = ['summary', 'standard', 'comprehensive'];
+      const type = validTypes.includes(documentType) ? documentType : 'standard';
+
+      // Cover page (all document types)
+      children.push(...this.createCoverPage(userAnalysis));
+      children.push(new PageBreak());
+
+      // Executive Summary (all document types)
+      children.push(...this.createExecutiveSummary(userAnalysis, recommendations));
+      children.push(new PageBreak());
+
+      // For summary type - skip to recommendations only
+      if (type === 'summary') {
+        children.push(...this.createTechnologyRecommendations(recommendations));
+        // Action plan for quick reference
+        children.push(new PageBreak());
+        children.push(...this.createActionPlan(recommendations, userAnalysis));
+      }
+
+      // For standard and comprehensive - include diagnosis
+      if (type === 'standard' || type === 'comprehensive') {
+        children.push(...this.createDiagnosis(userAnalysis));
+        children.push(new PageBreak());
+
+        // Technology recommendations
+        children.push(...this.createTechnologyRecommendations(recommendations));
+        children.push(new PageBreak());
+
+        // Implementation roadmap
+        children.push(...this.createImplementationRoadmap(recommendations));
+        children.push(new PageBreak());
+
+        // Success metrics
+        children.push(...this.createSuccessMetrics(userAnalysis));
+        children.push(new PageBreak());
+
+        // Action plan
+        children.push(...this.createActionPlan(recommendations, userAnalysis));
+      }
+
+      // For comprehensive only - add additional sections
+      if (type === 'comprehensive') {
+        children.push(new PageBreak());
+        children.push(...this.createDetailedComparisonMatrix(recommendations));
+        children.push(new PageBreak());
+        children.push(...this.createRiskMitigation(userAnalysis, recommendations));
+        children.push(new PageBreak());
+        children.push(...this.createChangeManagement(userAnalysis, recommendations));
+        children.push(new PageBreak());
+        children.push(...this.createCostBenefitAnalysis(recommendations));
+      }
+
+      // Footer with document info
       children.push(
         new Paragraph({
-          text: 'BUSINESS TRANSFORMATION PROGRAM',
-          heading: HeadingLevel.HEADING_1,
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 400 }
-        })
-      );
-
-      // Business name
-      children.push(
-        new Paragraph({
-          text: userAnalysis.businessName || 'Your Business',
-          heading: HeadingLevel.HEADING_2,
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 400 }
-        })
-      );
-
-      // Business type
-      if (userAnalysis.businessType) {
-        children.push(
-          new Paragraph({
-            text: `Business Type: ${userAnalysis.businessType}`,
-            spacing: { after: 200 }
-          })
-        );
-      }
-
-      // Main challenge
-      if (userAnalysis.mainChallenge) {
-        children.push(
-          new Paragraph({
-            text: `Primary Challenge: ${userAnalysis.mainChallenge}`,
-            spacing: { after: 200 }
-          })
-        );
-      }
-
-      // Budget
-      if (userAnalysis.budget) {
-        children.push(
-          new Paragraph({
-            text: `Budget: ${userAnalysis.budget}`,
-            spacing: { after: 200 }
-          })
-        );
-      }
-
-      // Timeline
-      if (userAnalysis.timeline) {
-        children.push(
-          new Paragraph({
-            text: `Implementation Timeline: ${userAnalysis.timeline}`,
-            spacing: { after: 400 }
-          })
-        );
-      }
-
-      // Recommendations heading
-      children.push(
-        new Paragraph({
-          text: 'Recommended Technologies',
-          heading: HeadingLevel.HEADING_1,
-          spacing: { before: 400, after: 200 }
-        })
-      );
-
-      // Add recommendations
-      if (Array.isArray(recommendations) && recommendations.length > 0) {
-        recommendations.forEach((rec, index) => {
-          children.push(
-            new Paragraph({
-              text: `${index + 1}. ${rec.name || 'Technology'}`,
-              heading: HeadingLevel.HEADING_2,
-              spacing: { before: 200, after: 100 }
-            })
-          );
-
-          if (rec.description) {
-            children.push(
-              new Paragraph({
-                text: rec.description,
-                spacing: { after: 100 }
-              })
-            );
-          }
-
-          if (rec.category) {
-            children.push(
-              new Paragraph({
-                text: `Category: ${rec.category}`,
-                spacing: { after: 100 }
-              })
-            );
-          }
-
-          if (rec.priority) {
-            children.push(
-              new Paragraph({
-                text: `Priority: ${rec.priority}`,
-                spacing: { after: 100 }
-              })
-            );
-          }
-
-          // Features/Factors
-          if (rec.factors && Array.isArray(rec.factors) && rec.factors.length > 0) {
-            children.push(
-              new Paragraph({
-                text: 'Why This Solution:',
-                heading: HeadingLevel.HEADING_3,
-                spacing: { after: 50 }
-              })
-            );
-            rec.factors.forEach(factor => {
-              children.push(
-                new Paragraph({
-                  text: `• ${factor}`,
-                  spacing: { after: 50 },
-                  indent: { left: 720 }
-                })
-              );
-            });
-            children.push(new Paragraph({ text: '', spacing: { after: 100 } }));
-          }
-
-          if (rec.pricing) {
-            children.push(
-              new Paragraph({
-                text: `Pricing: ${rec.pricing}`,
-                spacing: { after: 100 },
-                italics: true
-              })
-            );
-          }
-
-          if (rec.complexity || rec.setup) {
-            children.push(
-              new Paragraph({
-                text: `Implementation: ${rec.complexity || 'Moderate'} complexity | Setup: ${rec.setup || 'Quick'}`,
-                spacing: { after: 100 },
-                italics: true
-              })
-            );
-          }
-
-          if (rec.link || rec.website) {
-            children.push(
-              new Paragraph({
-                text: `Website: ${rec.link || rec.website}`,
-                spacing: { after: 200 },
-                color: '0070C0'
-              })
-            );
-          }
-        });
-      }
-
-      // Footer
-      children.push(
-        new Paragraph({
-          text: `Generated: ${this.documentDate}`,
+          text: `Generated: ${this.documentDate} | Document Type: ${type.toUpperCase()} | Pages: ${this.getEstimatedPages(type)}`,
           spacing: { before: 400 },
           alignment: AlignmentType.CENTER,
           italics: true,
           color: '666666',
-          size: 20
+          size: 18
         })
       );
 
@@ -851,6 +747,302 @@ class DocumentGenerator {
         spacing: { after: 100 }
       })
     );
+  }
+
+  /**
+   * Create detailed comparison matrix (comprehensive only)
+   */
+  createDetailedComparisonMatrix(recommendations) {
+    const paragraphs = [
+      new Paragraph({
+        text: 'DETAILED TECHNOLOGY COMPARISON',
+        heading: HeadingLevel.HEADING_1,
+        spacing: { after: 100 }
+      }),
+      new Paragraph({
+        text: 'How the recommended solutions compare across key dimensions:',
+        spacing: { after: 200 }
+      })
+    ];
+
+    // Create comprehensive comparison table
+    const headers = ['Feature', ...recommendations.slice(0, 4).map(r => r.name || 'Solution')];
+    const comparisonRows = [
+      new TableRow({
+        cells: headers.map(h => new TableCell({ children: [new Paragraph({ text: h, bold: true })] }))
+      }),
+      // Pricing row
+      new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph({ text: 'Pricing', bold: true })] }),
+          ...recommendations.slice(0, 4).map(r => new TableCell({ children: [new Paragraph(r.pricing || 'Contact vendor')] }))
+        ]
+      }),
+      // Complexity row
+      new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph({ text: 'Complexity', bold: true })] }),
+          ...recommendations.slice(0, 4).map(r => new TableCell({ children: [new Paragraph(r.complexity || 'Moderate')] }))
+        ]
+      }),
+      // Setup time row
+      new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph({ text: 'Setup Time', bold: true })] }),
+          ...recommendations.slice(0, 4).map(r => new TableCell({ children: [new Paragraph(r.setup || 'Quick')] }))
+        ]
+      }),
+      // Priority row
+      new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph({ text: 'Priority', bold: true })] }),
+          ...recommendations.slice(0, 4).map(r => new TableCell({ children: [new Paragraph(r.priority || 'Medium')] }))
+        ]
+      })
+    ];
+
+    paragraphs.push(
+      new Table({
+        rows: comparisonRows,
+        width: { size: 100, type: 'pct' }
+      })
+    );
+
+    return paragraphs;
+  }
+
+  /**
+   * Create risk mitigation section (comprehensive only)
+   */
+  createRiskMitigation(userAnalysis, recommendations) {
+    const paragraphs = [
+      new Paragraph({
+        text: 'RISK MITIGATION STRATEGY',
+        heading: HeadingLevel.HEADING_1,
+        spacing: { after: 200 }
+      }),
+      new Paragraph({
+        text: 'Potential Challenges & Solutions',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { after: 100 }
+      })
+    ];
+
+    const risks = [
+      {
+        risk: 'Staff Resistance to Change',
+        mitigation: 'Involve team members early in selection, provide comprehensive training, celebrate wins'
+      },
+      {
+        risk: 'Data Migration Complexity',
+        mitigation: 'Plan migration thoroughly, test with sample data, consider phased approach'
+      },
+      {
+        risk: 'Integration Challenges Between Tools',
+        mitigation: 'Map data flows, use APIs and webhooks, engage vendor support early'
+      },
+      {
+        risk: 'Budget Overruns',
+        mitigation: 'Use free trials before full rollout, negotiate volume discounts, plan for contingency'
+      },
+      {
+        risk: 'Implementation Delays',
+        mitigation: 'Assign dedicated project champion, set realistic timelines, monitor progress weekly'
+      },
+      {
+        risk: 'Low Adoption Rates',
+        mitigation: 'Start with power users, provide continuous support, demonstrate clear ROI'
+      }
+    ];
+
+    risks.forEach(item => {
+      paragraphs.push(
+        new Paragraph({
+          text: item.risk,
+          heading: HeadingLevel.HEADING_3,
+          spacing: { before: 100, after: 50 }
+        }),
+        new Paragraph({
+          text: `Mitigation: ${item.mitigation}`,
+          spacing: { after: 100 },
+          indent: { left: 720 }
+        })
+      );
+    });
+
+    return paragraphs;
+  }
+
+  /**
+   * Create change management section (comprehensive only)
+   */
+  createChangeManagement(userAnalysis, recommendations) {
+    const paragraphs = [
+      new Paragraph({
+        text: 'CHANGE MANAGEMENT FRAMEWORK',
+        heading: HeadingLevel.HEADING_1,
+        spacing: { after: 200 }
+      }),
+      new Paragraph({
+        text: 'Step-by-Step Change Implementation',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { after: 100 }
+      })
+    ];
+
+    const phases = [
+      {
+        phase: 'AWARENESS (Week 1)',
+        actions: [
+          'Announce the technology initiative and its benefits',
+          'Share the business case and expected outcomes',
+          'Address concerns and answer questions',
+          'Highlight how it solves current pain points'
+        ]
+      },
+      {
+        phase: 'ACCEPTANCE (Weeks 2-3)',
+        actions: [
+          'Provide hands-on demonstrations',
+          'Allow staff to experiment with free trials',
+          'Share success stories from similar organizations',
+          'Build internal champions who can advocate for the tools'
+        ]
+      },
+      {
+        phase: 'ADOPTION (Weeks 4-8)',
+        actions: [
+          'Roll out formal training programs',
+          'Implement peer mentoring for struggling users',
+          'Create quick reference guides and FAQs',
+          'Monitor adoption metrics and adjust as needed'
+        ]
+      },
+      {
+        phase: 'PROFICIENCY (Weeks 9+)',
+        actions: [
+          'Move to advanced training for power users',
+          'Optimize workflows based on real usage',
+          'Integrate with other business processes',
+          'Plan continuous improvement initiatives'
+        ]
+      }
+    ];
+
+    phases.forEach(item => {
+      paragraphs.push(
+        new Paragraph({
+          text: item.phase,
+          heading: HeadingLevel.HEADING_3,
+          spacing: { before: 150, after: 100 }
+        })
+      );
+      paragraphs.push(...this.createBulletPoints(item.actions));
+    });
+
+    return paragraphs;
+  }
+
+  /**
+   * Create cost-benefit analysis (comprehensive only)
+   */
+  createCostBenefitAnalysis(recommendations) {
+    const paragraphs = [
+      new Paragraph({
+        text: 'COST-BENEFIT ANALYSIS',
+        heading: HeadingLevel.HEADING_1,
+        spacing: { after: 200 }
+      }),
+      new Paragraph({
+        text: 'Financial Impact Projection',
+        heading: HeadingLevel.HEADING_2,
+        spacing: { after: 100 }
+      })
+    ];
+
+    // Estimate costs
+    const costs = [
+      { item: 'Software Licenses (Annual)', estimate: 'Based on selected pricing tiers' },
+      { item: 'Implementation & Setup', estimate: 'Typically 50-100 hours of consulting' },
+      { item: 'Training & Support', estimate: 'Estimated 20-30 hours per team member' },
+      { item: 'Data Migration', estimate: 'Varies by complexity of existing systems' }
+    ];
+
+    paragraphs.push(
+      new Paragraph({
+        text: 'Estimated Costs',
+        heading: HeadingLevel.HEADING_3,
+        spacing: { before: 100, after: 100 }
+      })
+    );
+
+    const costRows = [
+      new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph({ text: 'Cost Item', bold: true })] }),
+          new TableCell({ children: [new Paragraph({ text: 'Estimate', bold: true })] })
+        ]
+      }),
+      ...costs.map(c => new TableRow({
+        cells: [
+          new TableCell({ children: [new Paragraph(c.item)] }),
+          new TableCell({ children: [new Paragraph(c.estimate)] })
+        ]
+      }))
+    ];
+
+    paragraphs.push(
+      new Table({
+        rows: costRows,
+        width: { size: 100, type: 'pct' }
+      })
+    );
+
+    // Expected benefits
+    paragraphs.push(
+      new Paragraph({
+        text: 'Expected Benefits',
+        heading: HeadingLevel.HEADING_3,
+        spacing: { before: 200, after: 100 }
+      })
+    );
+
+    const benefits = [
+      '30-50% reduction in manual task time (ROI in 6-12 months)',
+      'Improved data accuracy and decision-making speed',
+      'Better customer satisfaction through faster response times',
+      'Scalability to support business growth',
+      'Reduced operational risks and compliance issues',
+      'Competitive advantage in your market'
+    ];
+
+    paragraphs.push(...this.createBulletPoints(benefits));
+
+    paragraphs.push(
+      new Paragraph({
+        text: 'Payback Period',
+        heading: HeadingLevel.HEADING_3,
+        spacing: { before: 200, after: 100 }
+      }),
+      new Paragraph({
+        text: 'For most organizations, the time savings and efficiency gains from these tools produce measurable ROI within 6-12 months. The longer-term benefits (competitive advantage, growth enablement) compound over years.',
+        spacing: { after: 100 }
+      })
+    );
+
+    return paragraphs;
+  }
+
+  /**
+   * Get estimated page count for document type
+   */
+  getEstimatedPages(documentType) {
+    const pageEstimates = {
+      'summary': '5-10',
+      'standard': '20-25',
+      'comprehensive': '40-50'
+    };
+    return pageEstimates[documentType] || '15-20';
   }
 
   /**
