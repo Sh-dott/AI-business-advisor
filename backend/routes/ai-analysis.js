@@ -95,7 +95,8 @@ router.post('/recommend', async (req, res) => {
       budget,
       teamSize,
       techLevel,
-      description
+      description,
+      language = 'en'
     } = req.body;
 
     // Validate required fields
@@ -110,9 +111,24 @@ router.post('/recommend', async (req, res) => {
       ? challenges.join(', ')
       : String(challenges || 'general growth');
 
-    const prompt = `You are an expert business technology consultant. Analyze this business and recommend 4 specific technologies they should implement.
+    // Language-specific instructions
+    const languageInstructions = {
+      en: 'You are an expert business technology consultant.',
+      he: 'אתה יועץ עסקי בתחום הטכנולוגיה בעל ניסיון רב.',
+      ru: 'Вы - опытный консультант по деловой технологии.'
+    };
 
-BUSINESS PROFILE:
+    const languageLabel = {
+      en: 'BUSINESS PROFILE:',
+      he: 'פרופיל העסק:',
+      ru: 'ПРОФИЛЬ КОМПАНИИ:'
+    };
+
+    const currentLangInstruction = languageInstructions[language] || languageInstructions.en;
+
+    const prompt = `${currentLangInstruction} Analyze this business and recommend 4 specific technologies they should implement.
+
+${languageLabel[language] || 'BUSINESS PROFILE:'}
 - Business Name: ${businessName || 'Not specified'}
 - Type: ${businessType}
 - Main Challenges: ${challengesList}
@@ -121,7 +137,7 @@ BUSINESS PROFILE:
 - Monthly Budget: ${budget}
 - Detailed Description: ${description}
 
-TASK: Provide 4 technology recommendations that directly address their challenges and fit their budget/team size.
+${language === 'he' ? 'משימה: ספקו 4 המלצות טכנולוגיה' : language === 'ru' ? 'ЗАДАЧА: Предоставьте 4 рекомендации по технологии' : 'TASK: Provide 4 technology recommendations'} that directly address their challenges and fit their budget/team size.
 
 For each recommendation, respond EXACTLY in this JSON format (return only valid JSON):
 {

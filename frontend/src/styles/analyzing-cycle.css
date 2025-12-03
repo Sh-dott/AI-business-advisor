@@ -158,77 +158,44 @@
   }
 }
 
-/* Stage indicators (dots) */
-.stage-indicators {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.indicator-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(217, 119, 6, 0.3);
-  transition: all 0.3s ease;
-  cursor: default;
-  border: 2px solid transparent;
-}
-
-.indicator-dot.active {
-  background: var(--color-accent);
-  box-shadow: 0 0 12px rgba(217, 119, 6, 0.6);
-  transform: scale(1.2);
-}
-
-.indicator-dot.completed {
-  background: var(--color-success);
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(217, 119, 6, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba(217, 119, 6, 0.8);
-  }
-}
-
-/* Progress bar */
-.progress-container {
+/* Smooth progress bar - no numbered progress */
+.smooth-progress-container {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
+  max-width: 400px;
+  padding: 0 20px;
 }
 
-.progress-bar {
+.smooth-progress-bar {
   width: 100%;
-  height: 6px;
-  background: rgba(217, 119, 6, 0.2);
+  height: 4px;
+  background: rgba(217, 119, 6, 0.15);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(217, 119, 6, 0.1);
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.08);
 }
 
-.progress-fill {
+.smooth-progress-fill {
   height: 100%;
   background: linear-gradient(90deg,
-    rgba(217, 119, 6, 0.8) 0%,
-    var(--color-accent) 50%,
-    rgba(217, 119, 6, 0.8) 100%);
-  transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(217, 119, 6, 0.6);
+    transparent 0%,
+    var(--color-accent) 25%,
+    var(--color-accent) 75%,
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: smoothFlow 2s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(217, 119, 6, 0.8);
 }
 
-.progress-text {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-  font-weight: 600;
+@keyframes smoothFlow {
+  0% {
+    background-position: 200% 0;
+  }
+  50% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Status messages */

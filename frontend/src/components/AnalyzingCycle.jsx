@@ -83,35 +83,11 @@ const AnalyzingCycle = () => {
           </div>
         </div>
 
-        {/* Progress dots */}
-        <div className="stage-indicators">
-          {stages.map((_, idx) => (
-            <div
-              key={idx}
-              className={`indicator-dot ${idx === stage ? 'active' : ''} ${
-                idx < stage ? 'completed' : ''
-              }`}
-              style={{
-                animation:
-                  idx === stage ? `pulse 1s ease-in-out infinite` : 'none'
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Progress bar */}
-        <div className="progress-container">
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${((stage + 1) / stages.length) * 100}%`
-              }}
-            ></div>
+        {/* Smooth progress animation */}
+        <div className="smooth-progress-container">
+          <div className="smooth-progress-bar">
+            <div className="smooth-progress-fill"></div>
           </div>
-          <p className="progress-text">
-            {stage + 1} מתוך {stages.length} שלבים
-          </p>
         </div>
 
         {/* Status messages */}
