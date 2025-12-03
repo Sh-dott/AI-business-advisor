@@ -1,3 +1,5 @@
+@import './styles/design-system.css';
+
 * {
   margin: 0;
   padding: 0;
@@ -5,15 +7,16 @@
 }
 
 :root {
-  --primary: #1e3a5f;
-  --secondary: #2d5a8c;
-  --accent: #00d4ff;
-  --light-bg: #f8fafb;
-  --card-bg: #ffffff;
-  --text-dark: #1a202c;
-  --text-light: #718096;
-  --success: #10b981;
-  --warning: #f59e0b;
+  /* Keep legacy variables for backward compatibility, but map to design system */
+  --primary: var(--color-primary-dark);
+  --secondary: var(--color-accent);
+  --accent: var(--color-accent);
+  --light-bg: var(--color-background-secondary);
+  --card-bg: var(--color-background);
+  --text-dark: var(--color-text-primary);
+  --text-light: var(--color-text-secondary);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
 }
 
 html {
@@ -21,11 +24,11 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--light-bg);
+  font-family: var(--font-sans);
+  background: var(--color-background-secondary);
   min-height: 100vh;
   direction: rtl;
-  color: var(--text-dark);
+  color: var(--color-text-primary);
 }
 
 .advisor-container {
@@ -78,7 +81,7 @@ svg {
 .logo {
   font-size: 36px;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: var(--gradient-premium);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -137,7 +140,7 @@ svg {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: var(--gradient-accent);
   transition: width 0.4s ease;
 }
 
@@ -226,7 +229,7 @@ svg {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--color-accent);
   color: white;
 }
 
@@ -320,7 +323,7 @@ svg {
 }
 
 .priority-badge {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--color-accent);
   color: white;
   padding: 6px 12px;
   border-radius: 8px;
@@ -382,7 +385,7 @@ svg {
   font-size: 16px;
   font-weight: 700;
   color: white;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--color-accent);
   width: 36px;
   height: 36px;
   border-radius: 8px;
