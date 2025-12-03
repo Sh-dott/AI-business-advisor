@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './index.css';
+import { LanguageProvider } from './context/LanguageContext';
 import BusinessTechAdvisor from './BusinessTechAdvisor';
 
 function App() {
   return (
-    <div className="App">
-      <BusinessTechAdvisor />
-    </div>
+    <LanguageProvider>
+      <div className="App">
+        <BusinessTechAdvisor />
+      </div>
+    </LanguageProvider>
   );
 }
 
