@@ -66,6 +66,7 @@ svg {
   text-align: center;
   margin: 60px 0 40px;
   animation: slideDown 0.8s ease-out;
+  position: relative;
 }
 
 @keyframes slideDown {
