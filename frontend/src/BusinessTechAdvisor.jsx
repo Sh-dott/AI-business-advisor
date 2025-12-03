@@ -189,7 +189,7 @@ function BusinessTechAdvisor() {
         <div className="header">
           <h1 className="logo">{t('header.title')}</h1>
           <p className="tagline">{t('header.tagline')}</p>
-          <div style={{ position: 'absolute', top: '20px', [dir === 'rtl' ? 'left' : 'right']: '20px' }}>
+          <div style={{ marginTop: '20px' }}>
             <LanguageSwitcher />
           </div>
         </div>
