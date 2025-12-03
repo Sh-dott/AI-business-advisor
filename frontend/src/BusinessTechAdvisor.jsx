@@ -185,6 +185,9 @@ function BusinessTechAdvisor() {
         <div className="header">
           <h1 className="logo">Business Tech Advisor</h1>
           <p className="tagline">✨ מחפש את הכלי הנכון לעסקך? תן לנו לעזור לך!</p>
+          <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div className="card fade-in-up">
