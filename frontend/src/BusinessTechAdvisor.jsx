@@ -3,9 +3,10 @@ import { questions } from './data/questions';
 import { technologies } from './data/technologies';
 import { analyzeAnswers } from './utils/analysis';
 import ExportProgram from './components/ExportProgram';
-import RecommendationTimeline from './components/RecommendationTimeline';
+import RecommendationList from './components/RecommendationList';
 import AnalyzingCycle from './components/AnalyzingCycle';
 import './index.css';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -334,7 +335,7 @@ function ResultsView({ results, onReset }) {
         </div>
 
         {/* Interactive Timeline Display */}
-        <RecommendationTimeline recommendations={recommendations} />
+        <RecommendationList recommendations={recommendations} />
 
         {/* Export Program Component */}
         {Object.keys(userAnalysis).length > 0 && recommendations.length > 0 && (
