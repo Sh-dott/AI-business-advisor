@@ -1,0 +1,421 @@
+/**
+ * Analyzing Cycle Animations
+ * Dynamic interactive cycle with rotating rings, particles, and stage transitions
+ */
+
+.analyzing-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.98) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.analyzing-cycle-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 600px;
+  margin: 0 20px;
+}
+
+/* Main cycle circle */
+.cycle-circle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+/* Rotating rings */
+.rotating-ring {
+  position: absolute;
+  border: 2px solid;
+  border-radius: 50%;
+  animation: spin linear infinite;
+}
+
+.rotating-ring.ring-1 {
+  width: 300px;
+  height: 300px;
+  border-color: rgba(217, 119, 6, 0.4);
+  animation: spin 8s linear infinite;
+  animation-direction: clockwise;
+}
+
+.rotating-ring.ring-2 {
+  width: 220px;
+  height: 220px;
+  border-color: rgba(217, 119, 6, 0.6);
+  animation: spin 6s linear infinite reverse;
+}
+
+.rotating-ring.ring-3 {
+  width: 140px;
+  height: 140px;
+  border-color: rgba(217, 119, 6, 0.8);
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Center content */
+.cycle-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: scaleInCenter 0.6s ease-out;
+}
+
+@keyframes scaleInCenter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.stage-icon {
+  font-size: 56px;
+  animation: float 3s ease-in-out infinite;
+  display: block;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.stage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin: 0;
+  animation: slideIn 0.5s ease-out;
+}
+
+.stage-description {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  animation: slideIn 0.5s ease-out 0.1s both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stage indicators (dots) */
+.stage-indicators {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(217, 119, 6, 0.3);
+  transition: all 0.3s ease;
+  cursor: default;
+  border: 2px solid transparent;
+}
+
+.indicator-dot.active {
+  background: var(--color-accent);
+  box-shadow: 0 0 12px rgba(217, 119, 6, 0.6);
+  transform: scale(1.2);
+}
+
+.indicator-dot.completed {
+  background: var(--color-success);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(217, 119, 6, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(217, 119, 6, 0.8);
+  }
+}
+
+/* Progress bar */
+.progress-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(217, 119, 6, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg,
+    rgba(217, 119, 6, 0.8) 0%,
+    var(--color-accent) 50%,
+    rgba(217, 119, 6, 0.8) 100%);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.6);
+}
+
+.progress-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Status messages */
+.status-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.analyzing-status {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  min-height: 24px;
+}
+
+.typing-animation {
+  display: inline-block;
+}
+
+.cycle-counter {
+  font-size: 12px;
+  color: rgba(217, 119, 6, 0.7);
+  margin: 0;
+  font-weight: 600;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Particles background */
+.particles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: floatUp var(--duration, 4s) ease-in infinite;
+  box-shadow: 0 0 6px rgba(217, 119, 6, 0.4);
+}
+
+.particle:nth-child(1) {
+  left: 20%;
+  bottom: 10%;
+  animation-delay: var(--delay, 0s);
+}
+
+.particle:nth-child(2) {
+  right: 15%;
+  bottom: 20%;
+  animation-delay: var(--delay, 0.2s);
+}
+
+.particle:nth-child(3) {
+  left: 40%;
+  bottom: 5%;
+  animation-delay: var(--delay, 0.4s);
+}
+
+.particle:nth-child(4) {
+  right: 25%;
+  bottom: 15%;
+  animation-delay: var(--delay, 0.6s);
+}
+
+.particle:nth-child(5) {
+  left: 60%;
+  bottom: 10%;
+  animation-delay: var(--delay, 0.8s);
+}
+
+.particle:nth-child(6) {
+  right: 40%;
+  bottom: 5%;
+  animation-delay: var(--delay, 1s);
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) translateX(var(--tx, 0px));
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cycle-circle {
+    width: 240px;
+    height: 240px;
+  }
+
+  .rotating-ring.ring-1 {
+    width: 240px;
+    height: 240px;
+  }
+
+  .rotating-ring.ring-2 {
+    width: 170px;
+    height: 170px;
+  }
+
+  .rotating-ring.ring-3 {
+    width: 100px;
+    height: 100px;
+  }
+
+  .stage-icon {
+    font-size: 44px;
+  }
+
+  .stage-title {
+    font-size: 18px;
+  }
+
+  .stage-description {
+    font-size: 13px;
+  }
+
+  .analyzing-cycle-wrapper {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cycle-circle {
+    width: 200px;
+    height: 200px;
+  }
+
+  .rotating-ring.ring-1 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .rotating-ring.ring-2 {
+    width: 140px;
+    height: 140px;
+  }
+
+  .rotating-ring.ring-3 {
+    width: 80px;
+    height: 80px;
+  }
+
+  .stage-icon {
+    font-size: 36px;
+  }
+
+  .stage-title {
+    font-size: 16px;
+  }
+
+  .stage-description {
+    font-size: 12px;
+  }
+
+  .analyzing-cycle-wrapper {
+    gap: 24px;
+  }
+
+  .progress-bar {
+    height: 4px;
+  }
+}

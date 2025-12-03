@@ -4,6 +4,7 @@ import { technologies } from './data/technologies';
 import { analyzeAnswers } from './utils/analysis';
 import ExportProgram from './components/ExportProgram';
 import RecommendationTimeline from './components/RecommendationTimeline';
+import AnalyzingCycle from './components/AnalyzingCycle';
 import './index.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -29,6 +30,11 @@ function BusinessTechAdvisor() {
     // Save answers to localStorage
     localStorage.setItem('techAdvisorAnswers', JSON.stringify(answers));
   }, [answers]);
+
+  // Show analyzing cycle overlay when analyzing
+  if (isAnalyzing) {
+    return <AnalyzingCycle />;
+  }
 
   const handleSelectAnswer = (questionId, value) => {
     setAnswers(prev => ({
