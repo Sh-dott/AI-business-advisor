@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { questions } from './data/questions';
+import { getTranslatedQuestions } from './data/questionsTranslated';
 import { technologies } from './data/technologies';
 import { analyzeAnswers } from './utils/analysis';
 import ExportProgram from './components/ExportProgram';
 import RecommendationList from './components/RecommendationList';
 import AnalyzingCycle from './components/AnalyzingCycle';
+import { useLanguage } from './hooks/useLanguage';
 import './index.css';
 import LanguageSwitcher from './components/LanguageSwitcher';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 function BusinessTechAdvisor() {
+  const { t, language, dir } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [analysisResults, setAnalysisResults] = useState(null);
   const [textInput, setTextInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState(null);
+  const questions = getTranslatedQuestions(t);
 
   useEffect(() => {
     // Load saved answers from localStorage
@@ -133,7 +136,7 @@ function BusinessTechAdvisor() {
     } catch (err) {
       console.error('AI Analysis error:', err);
       console.error('Error response:', err.response?.data || err.message);
-      setAnalyzeError(`⚠️ AI API Error: ${err.message}. Please check that OPENAI_API_KEY is configured on the backend.`);
+      setAnalyzeError(t('errors.api_error', { error: err.message }));
     } finally {
       setIsAnalyzing(false);
     }
@@ -155,7 +158,7 @@ function BusinessTechAdvisor() {
   };
 
   if (analysisResults) {
-    return <ResultsView results={analysisResults} onReset={handleReset} />;
+    return <ResultsView results={analysisResults} onReset={handleReset} t={t} dir={dir} />;
   }
 
   const q = questions[currentStep];
@@ -163,7 +166,7 @@ function BusinessTechAdvisor() {
   const isAnswered = answers[q.id];
 
   return (
-    <div className="advisor-container" lang="he">
+    <div className="advisor-container" dir={dir}>
       <div className="bg-container">
         <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           {/* Background SVG patterns - same as original */}
@@ -183,16 +186,16 @@ function BusinessTechAdvisor() {
 
       <div className="container">
         <div className="header">
-          <h1 className="logo">Business Tech Advisor</h1>
-          <p className="tagline">✨ מחפש את הכלי הנכון לעסקך? תן לנו לעזור לך!</p>
-          <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+          <h1 className="logo">{t('header.title')}</h1>
+          <p className="tagline">{t('header.tagline')}</p>
+          <div style={{ position: 'absolute', top: '20px', [dir === 'rtl' ? 'left' : 'right']: '20px' }}>
             <LanguageSwitcher />
           </div>
         </div>
 
         <div className="card fade-in-up">
           <div className="progress-section">
-            <div className="progress-text">שלב {currentStep + 1} מתוך {questions.length}</div>
+            <div className="progress-text">{t('quiz.progress', { current: currentStep + 1, total: questions.length })}</div>
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: `${progress}%` }}></div>
             </div>
@@ -232,7 +235,7 @@ function BusinessTechAdvisor() {
           <div className="button-group">
             {currentStep > 0 && (
               <button className="btn-secondary" onClick={handlePrevious} disabled={isAnalyzing}>
-                ← חזור
+                {t('buttons.previous')}
               </button>
             )}
             <button
@@ -243,9 +246,9 @@ function BusinessTechAdvisor() {
               {isAnalyzing ? (
                 <>
                   <span style={{ marginRight: 8 }}>🔄</span>
-                  מנתח...
+                  {t('quiz.analyzing')}
                 </>
-              ) : currentStep === questions.length - 1 ? 'קבל המלצות ➜' : 'הבא ➜'}
+              ) : currentStep === questions.length - 1 ? t('quiz.get_recommendations') : t('buttons.next')}
             </button>
           </div>
           {analyzeError && (
@@ -259,7 +262,7 @@ function BusinessTechAdvisor() {
   );
 }
 
-function ResultsView({ results, onReset }) {
+function ResultsView({ results, onReset, t, dir }) {
   try {
     // Extract recommendations and userAnalysis from results object
     let recommendations = [];
@@ -303,7 +306,7 @@ function ResultsView({ results, onReset }) {
   }
 
   return (
-    <div className="advisor-container" lang="he">
+    <div className="advisor-container" dir={dir}>
       <div className="bg-container">
         <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           <defs>
@@ -318,16 +321,16 @@ function ResultsView({ results, onReset }) {
 
       <div className="container">
         <div className="results-header fade-in-up">
-          <h1>🎯 המלצות טכנולוגיות עבורך</h1>
-          <p className="subtitle">בהתאם לתשובותיך, הנה 4 הפתרונות הטובים ביותר להעלאת העסק שלך</p>
+          <h1>{t('results.title')}</h1>
+          <p className="subtitle">{t('results.subtitle')}</p>
           {results.hasAIAnalysis && (
             <p style={{ color: '#4CAF50', fontSize: 14, marginTop: 8 }}>
-              ✨ המלצות אלו מופקות על ידי AI בעזרת OpenAI - ניתוח דינמי ומתאים לעסקך
+              {t('results.ai_analysis')}
             </p>
           )}
           {results.apiAvailable === false && !results.hasAIAnalysis && (
             <p style={{ color: '#ff9800', fontSize: 14, marginTop: 8 }}>
-              💡 המלצות אלו הם בהתאם לניתוח מקומי. לקבלת ניתוח מפורט עם OpenAI, נא לבדוק את חיבור השרת.
+              {t('results.local_analysis')}
             </p>
           )}
           {results.analysis && (
@@ -349,7 +352,7 @@ function ResultsView({ results, onReset }) {
 
         <div style={{ textAlign: 'center', margin: '40px 0' }}>
           <button className="btn-primary" onClick={onReset} style={{ fontSize: 16, padding: '14px 32px' }}>
-            🔄 תן לי לנסות שוב
+            {t('results.try_again')}
           </button>
         </div>
       </div>

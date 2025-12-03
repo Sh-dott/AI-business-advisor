@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Download, FileText, Loader } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 import '../styles/ExportProgram.css';
 
 /**
@@ -8,6 +9,7 @@ import '../styles/ExportProgram.css';
  * as a formatted Word document
  */
 const ExportProgram = ({ userAnalysis, recommendations }) => {
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -110,25 +112,25 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
     <div className="export-program-container">
       <div className="export-header">
         <FileText className="export-icon" size={32} />
-        <h2>Download Your Business Program</h2>
-        <p>Get a complete, customized business transformation guide as a Word document</p>
+        <h2>{t('export.title')}</h2>
+        <p>{t('export.subtitle')}</p>
       </div>
 
       <div className="export-options">
         <div className="export-option full-program">
           <div className="option-content">
-            <h3>📚 Full Business Program</h3>
-            <p>Complete transformation roadmap including:</p>
+            <h3>{t('export.full_program')}</h3>
+            <p>{t('export.full_program_desc')}</p>
             <ul>
-              <li>Executive summary of your business situation</li>
-              <li>Detailed diagnosis and findings</li>
-              <li>All 4 recommended technologies</li>
-              <li>Implementation phases and timeline</li>
-              <li>Success metrics and KPIs</li>
-              <li>Actionable 90-day plan</li>
-              <li>Resources and change management strategies</li>
+              <li>{t('export.full_program_feature_1')}</li>
+              <li>{t('export.full_program_feature_2')}</li>
+              <li>{t('export.full_program_feature_3')}</li>
+              <li>{t('export.full_program_feature_4')}</li>
+              <li>{t('export.full_program_feature_5')}</li>
+              <li>{t('export.full_program_feature_6')}</li>
+              <li>{t('export.full_program_feature_7')}</li>
             </ul>
-            <p className="program-info">Perfect for sharing with your team and leadership</p>
+            <p className="program-info">{t('export.full_program_info')}</p>
           </div>
           <button
             onClick={handleDownloadProgram}
@@ -138,12 +140,12 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
             {isLoading ? (
               <>
                 <Loader size={18} className="spinner" />
-                Generating...
+                {t('export.generating')}
               </>
             ) : (
               <>
                 <Download size={18} />
-                Download Full Program
+                {t('export.full_program_button')}
               </>
             )}
           </button>
@@ -151,16 +153,16 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
 
         <div className="export-option quick-summary">
           <div className="option-content">
-            <h3>⚡ Quick Summary</h3>
-            <p>Executive summary including:</p>
+            <h3>{t('export.quick_summary')}</h3>
+            <p>{t('export.quick_summary_desc')}</p>
             <ul>
-              <li>Your business profile and challenges</li>
-              <li>Top 4 technology recommendations</li>
-              <li>Why each tool was selected</li>
-              <li>Quick implementation steps</li>
-              <li>Resource links</li>
+              <li>{t('export.quick_summary_feature_1')}</li>
+              <li>{t('export.quick_summary_feature_2')}</li>
+              <li>{t('export.quick_summary_feature_3')}</li>
+              <li>{t('export.quick_summary_feature_4')}</li>
+              <li>{t('export.quick_summary_feature_5')}</li>
             </ul>
-            <p className="program-info">Perfect for a quick overview and decision making</p>
+            <p className="program-info">{t('export.quick_summary_info')}</p>
           </div>
           <button
             onClick={handleDownloadSummary}
@@ -170,12 +172,12 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
             {isLoading ? (
               <>
                 <Loader size={18} className="spinner" />
-                Generating...
+                {t('export.generating')}
               </>
             ) : (
               <>
                 <Download size={18} />
-                Download Summary
+                {t('export.quick_summary_button')}
               </>
             )}
           </button>

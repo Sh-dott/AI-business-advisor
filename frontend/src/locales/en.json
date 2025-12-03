@@ -131,5 +131,32 @@
     "download": "Download Program",
     "export": "Export as PDF",
     "close": "Close"
+  },
+  "export": {
+    "title": "Download Your Business Program",
+    "subtitle": "Get a complete, customized business transformation guide as a Word document",
+    "full_program": "📚 Full Business Program",
+    "full_program_desc": "Complete transformation roadmap including:",
+    "full_program_feature_1": "Executive summary of your business situation",
+    "full_program_feature_2": "Detailed diagnosis and findings",
+    "full_program_feature_3": "All 4 recommended technologies",
+    "full_program_feature_4": "Implementation phases and timeline",
+    "full_program_feature_5": "Success metrics and KPIs",
+    "full_program_feature_6": "Actionable 90-day plan",
+    "full_program_feature_7": "Resources and change management strategies",
+    "full_program_info": "Perfect for sharing with your team and leadership",
+    "full_program_button": "Download Full Program",
+    "quick_summary": "⚡ Quick Summary",
+    "quick_summary_desc": "Executive summary including:",
+    "quick_summary_feature_1": "Your business profile and challenges",
+    "quick_summary_feature_2": "Top 4 technology recommendations",
+    "quick_summary_feature_3": "Why each tool was selected",
+    "quick_summary_feature_4": "Quick implementation steps",
+    "quick_summary_feature_5": "Resource links",
+    "quick_summary_info": "Perfect for a quick overview and decision making",
+    "quick_summary_button": "Download Summary",
+    "generating": "Generating...",
+    "success": "Downloaded successfully!",
+    "error": "Error downloading document"
   }
 }
