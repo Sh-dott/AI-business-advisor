@@ -156,7 +156,7 @@ function BusinessTechAdvisor() {
   const isAnswered = answers[q.id];
 
   return (
-    <div className="advisor-container">
+    <div className="advisor-container" lang="he">
       <div className="bg-container">
         <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           {/* Background SVG patterns - same as original */}
@@ -293,7 +293,7 @@ function ResultsView({ results, onReset }) {
   }
 
   return (
-    <div className="advisor-container">
+    <div className="advisor-container" lang="he">
       <div className="bg-container">
         <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           <defs>

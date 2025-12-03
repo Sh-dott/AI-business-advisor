@@ -1,0 +1,334 @@
+/**
+ * RTL/LTR Support with CSS Logical Properties
+ * Automatically handles Hebrew (RTL) and English (LTR) text direction
+ * Uses CSS logical properties instead of physical left/right/top/bottom
+ */
+
+/* Root direction - will be overridden by lang attribute */
+:root {
+  --text-direction: rtl;
+  --text-align-start: right;
+  --text-align-end: left;
+  --margin-inline-start: margin-right;
+  --margin-inline-end: margin-left;
+  --padding-inline-start: padding-right;
+  --padding-inline-end: padding-left;
+}
+
+/* LTR Support */
+[lang="en"],
+[lang="en"] * {
+  direction: ltr;
+}
+
+[lang="he"],
+[lang="he"] * {
+  direction: rtl;
+}
+
+/* Helper classes for explicit direction */
+.ltr {
+  direction: ltr;
+}
+
+.rtl {
+  direction: rtl;
+}
+
+/* Logical properties for text */
+.text-start {
+  text-align: start;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Logical properties for spacing */
+.margin-inline-start {
+  margin-inline-start: 16px;
+}
+
+.margin-inline-end {
+  margin-inline-end: 16px;
+}
+
+.padding-inline-start {
+  padding-inline-start: 16px;
+}
+
+.padding-inline-end {
+  padding-inline-end: 16px;
+}
+
+/* Container logical margins */
+.container {
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* Cards and boxes */
+.card {
+  margin-block: 20px;
+  margin-inline: auto;
+  padding-block: 20px;
+  padding-inline: 40px;
+}
+
+/* Lists and items */
+.factors li,
+.timeline-card-factors li {
+  padding-inline-end: 20px;
+  position: relative;
+}
+
+.factors li:before,
+.timeline-card-factors li:before {
+  inset-inline-end: 0;
+  position: absolute;
+}
+
+/* Step items with borders */
+.step-item {
+  border-inline-end: 3px solid var(--color-accent);
+  padding-inline-start: 16px;
+}
+
+/* Button groups */
+.button-group {
+  justify-content: flex-end;
+}
+
+[lang="he"] .button-group {
+  justify-content: flex-start;
+}
+
+/* Progress bar and sections */
+.progress-section {
+  margin-block-end: 32px;
+}
+
+/* Options grid */
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.option {
+  padding-block: 20px;
+  padding-inline: 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--color-background-secondary);
+}
+
+.option:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* Timeline card layout */
+.timeline-card-header {
+  padding-block-start: 20px;
+  padding-block-end: 20px;
+  padding-inline: 20px;
+  border-block-end: 2px solid rgba(217, 119, 6, 0.1);
+}
+
+.timeline-card-content {
+  padding-block: 20px;
+  padding-inline: 20px;
+}
+
+.timeline-card-footer {
+  padding-block: 16px;
+  padding-inline: 20px;
+  border-block-start: 1px solid rgba(217, 119, 6, 0.1);
+}
+
+/* Meta items with flexbox */
+.rec-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-block: 20px;
+  padding-block: 16px;
+  padding-inline: 16px;
+  background: var(--color-background-secondary);
+  border-radius: 10px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
+/* Header alignment */
+.header {
+  text-align: center;
+  margin-block: 60px 40px;
+}
+
+.results-header {
+  text-align: center;
+  margin-block: 40px;
+}
+
+/* Recommendation card header */
+.rec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-block-end: 16px;
+}
+
+/* Mixed language support with bdi tags */
+bdi {
+  direction: auto;
+  unicode-bidi: isolate;
+}
+
+/* Inline direction handling */
+.inline-text {
+  display: inline;
+  unicode-bidi: isolate;
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+  direction: inherit;
+  text-align: start;
+}
+
+/* RTL-specific adjustments */
+[lang="he"] .step-item {
+  border-inline-end: 3px solid var(--color-accent);
+  border-inline-start: none;
+}
+
+[lang="he"] .factors li:before {
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+}
+
+[lang="he"] .button-group {
+  flex-direction: row-reverse;
+}
+
+[lang="he"] .rec-header {
+  flex-direction: row-reverse;
+}
+
+/* Floating elements */
+.float-start {
+  float: inline-start;
+}
+
+.float-end {
+  float: inline-end;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .card {
+    padding-block: 24px;
+    padding-inline: 24px;
+  }
+
+  .rec-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  [lang="he"] .button-group {
+    flex-direction: column;
+  }
+
+  .options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Print styles for RTL support */
+@media print {
+  body {
+    direction: inherit;
+  }
+
+  .container {
+    margin-inline: 0;
+  }
+
+  .card {
+    margin-block-start: 20px;
+    page-break-inside: avoid;
+  }
+}
+
+/* Bidirectional text mixing */
+.mixed-text {
+  unicode-bidi: isolate;
+  direction: auto;
+}
+
+.mixed-text strong,
+.mixed-text em {
+  unicode-bidi: isolate;
+}
+
+/* Icon positioning for RTL */
+[lang="he"] .icon-after {
+  margin-inline-start: 8px;
+  margin-inline-end: 0;
+}
+
+[lang="he"] .icon-before {
+  margin-inline-start: 0;
+  margin-inline-end: 8px;
+}
+
+.icon-after {
+  margin-inline-end: 8px;
+  margin-inline-start: 0;
+}
+
+.icon-before {
+  margin-inline-start: 8px;
+  margin-inline-end: 0;
+}
+
+/* Ensure proper text rendering */
+html[lang] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Link styling respects direction */
+a {
+  text-decoration: underline;
+  color: var(--color-accent);
+}
+
+a:visited {
+  color: var(--color-accent-dark);
+}
+
+/* Ensure consistent spacing in RTL context */
+.inline-block-text {
+  display: inline-block;
+  unicode-bidi: isolate;
+}
