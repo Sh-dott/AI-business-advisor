@@ -62,6 +62,8 @@ svg {
   padding: 20px;
 }
 
+/* Language switcher container positioning is now in language-switcher.css */
+
 .header {
   text-align: center;
   margin: 60px 0 40px;

@@ -185,13 +185,15 @@ function BusinessTechAdvisor() {
         </svg>
       </div>
 
+      {/* Language switcher - outside header to prevent animation interference */}
+      <div className="language-switcher-container">
+        <LanguageSwitcher />
+      </div>
+
       <div className="container">
         <div className="header">
           <h1 className="logo">{t('header.title')}</h1>
           <p className="tagline">{t('header.tagline')}</p>
-          <div style={{ marginTop: '20px' }}>
-            <LanguageSwitcher />
-          </div>
         </div>
 
         <div className="card fade-in-up">
