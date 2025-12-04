@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 import '../styles/analyzing-cycle.css';
 
 /**
@@ -7,6 +8,7 @@ import '../styles/analyzing-cycle.css';
  * Shows progress through AI analysis with animated stages
  */
 const AnalyzingCycle = () => {
+  const { t } = useLanguage();
   const [stage, setStage] = useState(0);
   const [cycleCount, setCycleCount] = useState(0);
 
@@ -14,32 +16,32 @@ const AnalyzingCycle = () => {
   const stages = [
     {
       icon: '🔍',
-      title: 'סורק תשובות',
-      description: 'ניתוח התשובות שלך...',
+      title: t('analyzing.stage1_title'),
+      description: t('analyzing.stage1_desc'),
       color: '#d97706'
     },
     {
       icon: '🧠',
-      title: 'עיבוד נתונים',
-      description: 'מעבדים את המידע...',
+      title: t('analyzing.stage2_title'),
+      description: t('analyzing.stage2_desc'),
       color: '#d97706'
     },
     {
       icon: '🤖',
-      title: 'בדיקת AI',
-      description: 'בדיקת בינה מלאכותית...',
+      title: t('analyzing.stage3_title'),
+      description: t('analyzing.stage3_desc'),
       color: '#d97706'
     },
     {
       icon: '⚡',
-      title: 'יצירת המלצות',
-      description: 'יוצרים המלצות מותאמות...',
+      title: t('analyzing.stage4_title'),
+      description: t('analyzing.stage4_desc'),
       color: '#d97706'
     },
     {
       icon: '✨',
-      title: 'ביצוע אופטימיזציה',
-      description: 'מייטבים את התוצאות...',
+      title: t('analyzing.stage5_title'),
+      description: t('analyzing.stage5_desc'),
       color: '#d97706'
     }
   ];
@@ -93,10 +95,10 @@ const AnalyzingCycle = () => {
         {/* Status messages */}
         <div className="status-messages">
           <p className="analyzing-status">
-            <span className="typing-animation">עם אנא, המתן בזמן שאנחנו מנתחים את נתוניך</span>
+            <span className="typing-animation">{t('analyzing.please_wait')}</span>
           </p>
           <p className="cycle-counter">
-            ביצוע ניתוח... {cycleCount + 1}
+            {t('analyzing.performing_analysis')} {cycleCount + 1}
           </p>
         </div>
       </div>

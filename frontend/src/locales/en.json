@@ -164,5 +164,19 @@
     "tips_3": "Track success metrics to measure impact",
     "tips_4": "Review and adjust plan as you learn more",
     "tips_5": "Keep the document as reference throughout implementation"
+  },
+  "analyzing": {
+    "stage1_title": "Scanning Answers",
+    "stage1_desc": "Analyzing your responses...",
+    "stage2_title": "Processing Data",
+    "stage2_desc": "Processing the information...",
+    "stage3_title": "AI Checking",
+    "stage3_desc": "Running AI analysis...",
+    "stage4_title": "Creating Recommendations",
+    "stage4_desc": "Generating tailored recommendations...",
+    "stage5_title": "Optimizing",
+    "stage5_desc": "Optimizing the results...",
+    "please_wait": "Please wait while we analyze your data",
+    "performing_analysis": "Performing analysis..."
   }
 }
