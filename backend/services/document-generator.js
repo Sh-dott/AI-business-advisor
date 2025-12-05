@@ -1,7 +1,29 @@
 const { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun, AlignmentType, BorderStyle, convertInchesToTwip, HeadingLevel, UnorderedList, ListItem, PageBreak } = require('docx');
 const fs = require('fs');
 const path = require('path');
-const { t } = require('../locales/export-translations');
+
+// Try to load translations, fallback to basic English if not available
+let t;
+try {
+  t = require('../locales/export-translations').t;
+} catch (error) {
+  // Fallback: simple translation function that returns the key
+  t = (lang, key) => {
+    const fallbackTranslations = {
+      businessProgram: 'Business Technology Program',
+      preparedFor: 'Prepared for',
+      generatedOn: 'Generated on',
+      executiveSummary: 'Executive Summary',
+      yourBusinessProfile: 'Your Business Profile',
+      businessType: 'Business Type',
+      mainChallenge: 'Main Challenge',
+      techLevel: 'Tech Experience',
+      monthlyBudget: 'Monthly Budget',
+      teamSize: 'Team Size'
+    };
+    return fallbackTranslations[key] || key;
+  };
+}
 
 /**
  * Generates a customized business transformation program as a Word document
