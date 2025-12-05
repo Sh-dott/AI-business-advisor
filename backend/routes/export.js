@@ -66,7 +66,7 @@ function normalizeRecommendation(rec) {
  */
 router.post('/program', async (req, res) => {
   try {
-    const { userAnalysis, recommendations, documentType = 'standard' } = req.body;
+    const { userAnalysis, recommendations, documentType = 'standard', language = 'en' } = req.body;
 
     // Validate required fields
     if (!userAnalysis || !recommendations || recommendations.length === 0) {
@@ -86,11 +86,12 @@ router.post('/program', async (req, res) => {
       });
     }
 
-    // Generate the document with specified document type
+    // Generate the document with specified document type and language
     const doc = await documentGenerator.generateBusinessProgram(
       userAnalysis,
       normalizedRecommendations,
-      documentType
+      documentType,
+      language
     );
 
     // Convert to buffer
@@ -123,7 +124,7 @@ router.post('/program', async (req, res) => {
  */
 router.post('/summary', async (req, res) => {
   try {
-    const { userAnalysis, recommendations } = req.body;
+    const { userAnalysis, recommendations, language = 'en' } = req.body;
 
     if (!userAnalysis || !recommendations) {
       return res.status(400).json({
@@ -143,10 +144,12 @@ router.post('/summary', async (req, res) => {
       });
     }
 
-    // Generate shorter version
+    // Generate shorter version with language support
     const doc = await documentGenerator.generateBusinessProgram(
       userAnalysis,
-      normalizedRecommendations
+      normalizedRecommendations,
+      'summary',
+      language
     );
 
     const buffer = await documentGenerator.getDocumentBuffer(doc);

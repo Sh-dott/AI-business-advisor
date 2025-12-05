@@ -9,7 +9,7 @@ import '../styles/ExportProgram.css';
  * as a formatted Word document
  */
 const ExportProgram = ({ userAnalysis, recommendations }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -29,7 +29,8 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
           },
           body: JSON.stringify({
             userAnalysis,
-            recommendations
+            recommendations,
+            language
           })
         }
       );
@@ -78,7 +79,8 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
           },
           body: JSON.stringify({
             userAnalysis,
-            recommendations: recommendations.slice(0, 4)
+            recommendations: recommendations.slice(0, 4),
+            language
           })
         }
       );

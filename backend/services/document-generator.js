@@ -1,6 +1,7 @@
 const { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun, AlignmentType, BorderStyle, convertInchesToTwip, HeadingLevel, UnorderedList, ListItem, PageBreak } = require('docx');
 const fs = require('fs');
 const path = require('path');
+const { t } = require('../locales/export-translations');
 
 /**
  * Generates a customized business transformation program as a Word document
@@ -13,6 +14,24 @@ class DocumentGenerator {
       month: 'long',
       day: 'numeric'
     });
+    this.language = 'en'; // Default language
+  }
+
+  /**
+   * Set the document language for translations
+   * @param {string} lang - Language code (en, he, ru)
+   */
+  setLanguage(lang) {
+    this.language = lang || 'en';
+  }
+
+  /**
+   * Get translated text
+   * @param {string} key - Translation key
+   * @returns {string} - Translated text
+   */
+  translate(key) {
+    return t(this.language, key);
   }
 
   /**
@@ -20,9 +39,13 @@ class DocumentGenerator {
    * @param {Object} userAnalysis - User's business profile
    * @param {Array} recommendations - Technology recommendations
    * @param {string} documentType - 'summary' (5-10 pages), 'standard' (20-25 pages), 'comprehensive' (40-50 pages)
+   * @param {string} language - Language code (en, he, ru)
    */
-  async generateBusinessProgram(userAnalysis, recommendations, documentType = 'standard') {
+  async generateBusinessProgram(userAnalysis, recommendations, documentType = 'standard', language = 'en') {
     try {
+      // Set language for translations
+      this.setLanguage(language);
+
       const children = [];
 
       // Validate document type
@@ -110,16 +133,10 @@ class DocumentGenerator {
   createCoverPage(userAnalysis) {
     const paragraphs = [
       new Paragraph({
-        text: 'BUSINESS TRANSFORMATION PROGRAM',
+        text: this.translate('businessProgram').toUpperCase(),
         heading: HeadingLevel.HEADING_1,
         alignment: AlignmentType.CENTER,
         spacing: { after: 200 }
-      }),
-      new Paragraph({
-        text: 'AI-Powered Technology Strategy & Implementation Guide',
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 600 },
-        style: 'intense'
       }),
       new Paragraph({
         text: userAnalysis.businessName || 'Your Business',
@@ -129,7 +146,7 @@ class DocumentGenerator {
         bold: true
       }),
       new Paragraph({
-        text: `Business Type: ${userAnalysis.businessType}`,
+        text: `${this.translate('businessType')}: ${userAnalysis.businessType}`,
         alignment: AlignmentType.CENTER,
         spacing: { after: 400 }
       }),
@@ -137,18 +154,11 @@ class DocumentGenerator {
       new Paragraph(''),
       new Paragraph(''),
       new Paragraph({
-        text: `Generated: ${this.documentDate}`,
+        text: `${this.translate('generatedOn')}: ${this.documentDate}`,
         alignment: AlignmentType.CENTER,
         spacing: { before: 400 },
         italics: true,
         color: '666666'
-      }),
-      new Paragraph({
-        text: 'This document is a personalized business transformation program designed specifically for your organization.',
-        alignment: AlignmentType.CENTER,
-        spacing: { before: 200 },
-        size: 20,
-        italics: true
       })
     ];
 
@@ -161,12 +171,12 @@ class DocumentGenerator {
   createExecutiveSummary(userAnalysis, recommendations) {
     const paragraphs = [
       new Paragraph({
-        text: 'EXECUTIVE SUMMARY',
+        text: this.translate('executiveSummary').toUpperCase(),
         heading: HeadingLevel.HEADING_1,
         spacing: { after: 200 }
       }),
       new Paragraph({
-        text: 'Your Current Situation',
+        text: this.translate('yourBusinessProfile'),
         heading: HeadingLevel.HEADING_2,
         spacing: { after: 100 }
       }),
