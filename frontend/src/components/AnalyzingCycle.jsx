@@ -18,31 +18,31 @@ const AnalyzingCycle = () => {
       icon: '🔍',
       title: t('analyzing.stage1_title'),
       description: t('analyzing.stage1_desc'),
-      color: '#d97706'
+      color: '#00d4ff'
     },
     {
       icon: '🧠',
       title: t('analyzing.stage2_title'),
       description: t('analyzing.stage2_desc'),
-      color: '#d97706'
+      color: '#00d4ff'
     },
     {
       icon: '🤖',
       title: t('analyzing.stage3_title'),
       description: t('analyzing.stage3_desc'),
-      color: '#d97706'
+      color: '#00d4ff'
     },
     {
       icon: '⚡',
       title: t('analyzing.stage4_title'),
       description: t('analyzing.stage4_desc'),
-      color: '#d97706'
+      color: '#00d4ff'
     },
     {
       icon: '✨',
       title: t('analyzing.stage5_title'),
       description: t('analyzing.stage5_desc'),
-      color: '#d97706'
+      color: '#00d4ff'
     }
   ];
 

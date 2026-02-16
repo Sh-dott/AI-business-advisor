@@ -1,11 +1,16 @@
+/**
+ * Export Program - Dark Glassmorphism Theme
+ * Download cards with glass effects and glow accents
+ */
+
 .export-program-container {
   padding: 40px 20px;
   max-width: 1000px;
   margin: 0 auto;
-  animation: fadeIn 0.5s ease-in;
+  animation: exportFadeIn 0.5s var(--ease-out);
 }
 
-@keyframes fadeIn {
+@keyframes exportFadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -22,31 +27,21 @@
 }
 
 .export-icon {
-  color: #0070c0;
+  color: var(--cyan);
   margin-bottom: 15px;
-  animation: bounce 2s infinite;
   display: none;
 }
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 .export-header h2 {
-  font-size: 32px;
-  color: #1a1a1a;
+  font-size: var(--fs-2xl);
+  color: var(--text-primary);
   margin: 15px 0;
   font-weight: 700;
 }
 
 .export-header p {
-  font-size: 16px;
-  color: #666;
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -59,29 +54,31 @@
 }
 
 .export-option {
-  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
   padding: 30px;
-  transition: all 0.3s ease;
+  transition: all var(--dur-base) var(--ease-out);
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .export-option:hover {
-  border-color: #0070c0;
-  box-shadow: 0 8px 24px rgba(0, 112, 192, 0.15);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-glow-sm);
   transform: translateY(-4px);
 }
 
 .export-option.full-program {
-  background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
-  border-color: #0070c0;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, var(--glass-bg) 100%);
+  border-color: rgba(0, 212, 255, 0.25);
 }
 
 .export-option.quick-summary {
-  background: linear-gradient(135deg, #fff5f0 0%, #ffe6e0 100%);
-  border-color: #ff6b35;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, var(--glass-bg) 100%);
+  border-color: rgba(59, 130, 246, 0.25);
 }
 
 .option-content {
@@ -90,14 +87,14 @@
 }
 
 .option-content h3 {
-  font-size: 22px;
-  color: #1a1a1a;
+  font-size: var(--fs-xl);
+  color: var(--text-primary);
   margin: 0 0 10px 0;
   font-weight: 700;
 }
 
 .option-content > p:first-of-type {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0 0 15px 0;
   font-size: 14px;
 }
@@ -110,37 +107,39 @@
 
 .option-content ul li {
   padding: 8px 0;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 14px;
-  padding-left: 20px;
+  padding-inline-start: 20px;
   position: relative;
 }
 
 .option-content ul li:before {
-  content: '✓';
+  content: '\2713';
   position: absolute;
-  left: 0;
-  color: #0070c0;
+  inset-inline-start: 0;
+  color: var(--cyan);
   font-weight: bold;
 }
 
 .export-option.quick-summary ul li:before {
-  color: #ff6b35;
+  color: var(--blue);
 }
 
 .program-info {
-  background: rgba(0, 112, 192, 0.08);
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.12);
   padding: 12px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   margin-top: 15px !important;
-  color: #0070c0;
-  font-size: 13px;
+  color: var(--cyan-dim);
+  font-size: var(--fs-sm);
   font-style: italic;
 }
 
 .export-option.quick-summary .program-info {
-  background: rgba(255, 107, 53, 0.08);
-  color: #ff6b35;
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.12);
+  color: var(--blue);
 }
 
 /* Download Button */
@@ -151,34 +150,36 @@
   gap: 10px;
   padding: 14px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--dur-base) var(--ease-out);
   width: 100%;
   margin-top: auto;
+  font-family: var(--font-sans);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-download.full {
-  background: linear-gradient(135deg, #0070c0 0%, #0059a8 100%);
-  color: white;
+  background: var(--grad-button);
+  color: var(--bg-deepest);
 }
 
 .btn-download.full:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0059a8 0%, #004490 100%);
-  box-shadow: 0 4px 12px rgba(0, 112, 192, 0.4);
+  box-shadow: var(--shadow-glow-md);
   transform: translateY(-2px);
 }
 
 .btn-download.summary {
-  background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
 }
 
 .btn-download.summary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
   transform: translateY(-2px);
 }
 
@@ -192,25 +193,22 @@
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Messages */
 .export-error,
 .export-success {
   padding: 16px 20px;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   margin-bottom: 20px;
   font-weight: 500;
-  animation: slideIn 0.3s ease;
+  animation: exportSlideIn 0.3s var(--ease-out);
+  backdrop-filter: blur(12px);
 }
 
-@keyframes slideIn {
+@keyframes exportSlideIn {
   from {
     opacity: 0;
     transform: translateX(-20px);
@@ -222,35 +220,40 @@
 }
 
 .export-error {
-  background: #ffebee;
-  color: #c62828;
-  border-left: 4px solid #c62828;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-inline-start: 4px solid var(--red);
 }
 
 .export-success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border-left: 4px solid #2e7d32;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-inline-start: 4px solid var(--emerald);
 }
 
 .export-error p,
 .export-success p {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--fs-base);
 }
 
 /* Tips Section */
 .export-tips {
-  background: #f5f5f5;
-  border-radius: 12px;
+  background: var(--glass-bg);
+  border-radius: var(--r-lg);
   padding: 25px;
   margin-top: 30px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .export-tips h4 {
   margin: 0 0 15px 0;
-  color: #1a1a1a;
-  font-size: 18px;
+  color: var(--text-primary);
+  font-size: var(--fs-lg);
   font-weight: 700;
 }
 
@@ -262,17 +265,17 @@
 
 .export-tips ul li {
   padding: 10px 0;
-  color: #555;
-  font-size: 15px;
-  padding-left: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  padding-inline-start: 24px;
   position: relative;
 }
 
 .export-tips ul li:before {
-  content: '→';
+  content: '\2192';
   position: absolute;
-  left: 0;
-  color: #0070c0;
+  inset-inline-start: 0;
+  color: var(--cyan);
   font-weight: bold;
   font-size: 18px;
 }

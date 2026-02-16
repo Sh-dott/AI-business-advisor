@@ -8,6 +8,8 @@ import '../styles/ExportProgram.css';
  * Allows users to download their personalized business transformation program
  * as a formatted Word document
  */
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 const ExportProgram = ({ userAnalysis, recommendations }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +23,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
       setSuccess(false);
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/export/program`,
+        `${API_URL}/export/program`,
         {
           method: 'POST',
           headers: {
@@ -46,7 +48,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Business_Transformation_Program_${userAnalysis.businessName || 'Program'}_${new Date().getTime()}.docx`;
+      link.download = `Security_Protection_Program_${userAnalysis.businessName || 'Program'}_${new Date().getTime()}.docx`;
 
       // Trigger download
       document.body.appendChild(link);
@@ -71,7 +73,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
       setSuccess(false);
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/export/summary`,
+        `${API_URL}/export/summary`,
         {
           method: 'POST',
           headers: {
@@ -93,7 +95,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Business_Summary_${userAnalysis.businessName || 'Summary'}_${new Date().getTime()}.docx`;
+      link.download = `Security_Summary_${userAnalysis.businessName || 'Summary'}_${new Date().getTime()}.docx`;
 
       document.body.appendChild(link);
       link.click();
@@ -188,7 +190,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
 
       {error && (
         <div className="export-error">
-          <p>❌ {error}</p>
+          <p>{error}</p>
         </div>
       )}
 
@@ -199,7 +201,7 @@ const ExportProgram = ({ userAnalysis, recommendations }) => {
       )}
 
       <div className="export-tips">
-        <h4>💡 {t('export.tips_title')}</h4>
+        <h4>{t('export.tips_title')}</h4>
         <ul>
           <li>{t('export.tips_1')}</li>
           <li>{t('export.tips_2')}</li>

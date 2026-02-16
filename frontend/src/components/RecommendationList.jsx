@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import { lookupProduct, getFaviconUrl } from '../data/securityProducts';
 import '../styles/recommendation-list.css';
 
 /**
  * RecommendationList
- * Displays recommendations in a vertical list with expand/collapse functionality
- * Simple, clean, and accessible list view instead of timeline
+ * Displays security recommendations in a vertical list with expand/collapse functionality
+ * Shows category, priority, why-this-matters, implementation steps, pitfalls, and tool categories
  */
+const CATEGORY_LABELS = {
+  email_security: 'category_email_security',
+  identity_access: 'category_identity_access',
+  awareness_training: 'category_awareness_training',
+  process_ir: 'category_process_ir'
+};
+
 const RecommendationList = ({ recommendations = [] }) => {
   const [expandedIndices, setExpandedIndices] = useState(new Set([0]));
   const { t, language } = useLanguage();
@@ -34,19 +42,17 @@ const RecommendationList = ({ recommendations = [] }) => {
     );
   }
 
-  const getPriorityLabel = (index) => {
-    if (index === 0) return t('results.high_priority');
-    if (index === 1) return t('results.medium_priority');
-    return t('results.low_priority');
+  const getPriorityClass = (priority) => {
+    if (!priority) return 'priority-1';
+    const p = priority.toLowerCase();
+    if (p === 'critical') return 'priority-0';
+    if (p === 'high') return 'priority-1';
+    return 'priority-2';
   };
 
-  const getComplexityLabel = (complexity) => {
-    if (typeof complexity === 'number') {
-      if (complexity <= 3) return t('results.easy');
-      if (complexity <= 6) return t('results.moderate');
-      return t('results.complex');
-    }
-    return complexity;
+  const getCategoryLabel = (category) => {
+    const key = CATEGORY_LABELS[category];
+    return key ? t(`results.${key}`) : category;
   };
 
   return (
@@ -55,13 +61,15 @@ const RecommendationList = ({ recommendations = [] }) => {
         {recommendations.map((rec, index) => {
           const isExpanded = expandedIndices.has(index);
           const name = rec.name || rec.title || 'Recommendation';
-          const category = rec.category || 'Technology';
+          const category = rec.category || '';
           const description = rec.description || '';
-          const benefits = rec.benefits || [];
-          const setupTime = rec.setup_time || rec.setupTime || 'Variable';
-          const complexity = rec.complexity || rec.complexity_score || 'Moderate';
-          const pricing = rec.pricing || rec.pricing_description || t('results.free');
-          const link = rec.link || '#';
+          const priority = rec.priority || 'Medium';
+          const why = rec.why || '';
+          const steps = Array.isArray(rec.steps) ? rec.steps : [];
+          const pitfalls = Array.isArray(rec.pitfalls) ? rec.pitfalls : [];
+          const toolCategories = Array.isArray(rec.toolCategories) ? rec.toolCategories : [];
+          const estimatedEffort = rec.estimatedEffort || '';
+          const estimatedCost = rec.estimatedCost || '';
 
           return (
             <div key={index} className={`list-item ${isExpanded ? 'expanded' : ''}`}>
@@ -71,12 +79,12 @@ const RecommendationList = ({ recommendations = [] }) => {
 
                 <div className="item-title-section">
                   <h3 className="item-title">{name}</h3>
-                  <p className="item-category">{category}</p>
+                  <p className="item-category">{getCategoryLabel(category)}</p>
                 </div>
 
                 <div className="item-priority">
-                  <span className={`priority-badge priority-${index}`}>
-                    {getPriorityLabel(index)}
+                  <span className={`priority-badge ${getPriorityClass(priority)}`}>
+                    {priority}
                   </span>
                 </div>
 
@@ -85,7 +93,7 @@ const RecommendationList = ({ recommendations = [] }) => {
                   aria-label={isExpanded ? 'Collapse' : 'Expand'}
                   onClick={() => handleToggle(index)}
                 >
-                  <span className="arrow">▼</span>
+                  <span className="arrow">&#x25BC;</span>
                 </button>
               </div>
 
@@ -99,47 +107,88 @@ const RecommendationList = ({ recommendations = [] }) => {
                     </div>
                   )}
 
-                  {/* Benefits */}
-                  {Array.isArray(benefits) && benefits.length > 0 && (
+                  {/* Why This Matters */}
+                  {why && (
                     <div className="content-section">
-                      <h4 className="section-title">{dir === 'rtl' ? `${t('results.benefits')} ✓` : `✓ ${t('results.benefits')}`}</h4>
-                      <ul className="benefits-list">
-                        {benefits.map((benefit, idx) => (
-                          <li key={idx}>{benefit}</li>
+                      <h4 className="section-title">{t('results.why_this_matters')}</h4>
+                      <p className="section-text" style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>{why}</p>
+                    </div>
+                  )}
+
+                  {/* Implementation Steps */}
+                  {steps.length > 0 && (
+                    <div className="content-section">
+                      <h4 className="section-title">{t('results.implementation_steps')}</h4>
+                      <ol className="steps-list">
+                        {steps.map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
+                  {/* Common Pitfalls */}
+                  {pitfalls.length > 0 && (
+                    <div className="content-section">
+                      <h4 className="section-title">{t('results.common_pitfalls')}</h4>
+                      <ul className="pitfalls-list">
+                        {pitfalls.map((pitfall, idx) => (
+                          <li key={idx}>{pitfall}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* Meta Information - Setup, Complexity, Pricing */}
-                  <div className="meta-grid">
-                    <div className="meta-item">
-                      <span className="meta-label">{dir === 'rtl' ? `${t('results.setup_time')} ⏱️` : `⏱️ ${t('results.setup_time')}`}</span>
-                      <span className="meta-value">{setupTime}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-label">{dir === 'rtl' ? `${t('results.complexity')} ⚙️` : `⚙️ ${t('results.complexity')}`}</span>
-                      <span className="meta-value">{getComplexityLabel(complexity)}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-label">{dir === 'rtl' ? `${t('results.pricing')} 💰` : `💰 ${t('results.pricing')}`}</span>
-                      <span className="meta-value">{pricing}</span>
-                    </div>
-                  </div>
-
-                  {/* Learn More Link */}
-                  {link && link !== '#' && (
-                    <div className="learn-more-section">
-                      <a
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="learn-more-button"
-                      >
-                        {dir === 'rtl' ? `← ${t('results.learn_more')}` : `${t('results.learn_more')} →`}
-                      </a>
+                  {/* Tool Categories */}
+                  {toolCategories.length > 0 && (
+                    <div className="content-section">
+                      <h4 className="section-title">{t('results.tool_categories')}</h4>
+                      <div className="tool-cards-grid">
+                        {toolCategories.map((tool, idx) => {
+                          const product = lookupProduct(tool);
+                          if (product) {
+                            return (
+                              <a
+                                key={idx}
+                                href={product.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="tool-card"
+                              >
+                                <img
+                                  src={getFaviconUrl(product.domain)}
+                                  alt=""
+                                  className="tool-card-icon"
+                                  loading="lazy"
+                                />
+                                <span className="tool-card-name">{product.name}</span>
+                                <span className="tool-card-arrow">&#x2197;</span>
+                              </a>
+                            );
+                          }
+                          return (
+                            <span key={idx} className="tool-chip">{tool}</span>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
+
+                  {/* Meta Information - Effort, Cost */}
+                  <div className="meta-grid">
+                    {estimatedEffort && (
+                      <div className="meta-item">
+                        <span className="meta-label">{t('results.setup_time')}</span>
+                        <span className="meta-value">{estimatedEffort}</span>
+                      </div>
+                    )}
+                    {estimatedCost && (
+                      <div className="meta-item">
+                        <span className="meta-label">{t('results.pricing')}</span>
+                        <span className="meta-value">{estimatedCost}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

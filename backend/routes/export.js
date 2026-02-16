@@ -3,63 +3,56 @@ const router = express.Router();
 const documentGenerator = require('../services/document-generator');
 
 /**
+ * Sanitize filename - strip non-ASCII characters for HTTP headers
+ */
+function safeFileName(name) {
+  return (name || '').replace(/[^\x20-\x7E]/g, '').replace(/[/\\?%*:|"<>]/g, '').trim() || 'Report';
+}
+
+/**
  * Normalize recommendation data from AI API format to document generator format
- * Maps AI response fields to expected document generator fields
+ * Maps security recommendation fields to expected document generator fields
  */
 function normalizeRecommendation(rec) {
   if (!rec) return null;
 
   return {
-    // Core fields
     name: rec.name || '',
     category: rec.category || '',
-    description: rec.description || rec.why || '',
+    description: rec.description || '',
     priority: rec.priority || 'Medium',
-    pricing: rec.pricing || '',
-
-    // Map AI 'benefits' to 'factors' for document generator
-    factors: Array.isArray(rec.benefits) ? rec.benefits :
-             Array.isArray(rec.matchingFactors) ? rec.matchingFactors : [],
-
-    // Map 'setup' to 'setup' (already matches)
-    setup: rec.setup || rec.setupTime || 'Quick',
-
-    // Handle complexity
-    complexity: rec.complexity || 'Moderate',
-
-    // Link/website mapping
-    link: rec.link || rec.website || '',
-    website: rec.link || rec.website || '',
-
-    // Keep original fields as fallback
-    ...rec
+    why: rec.why || '',
+    steps: Array.isArray(rec.steps) ? rec.steps : [],
+    pitfalls: Array.isArray(rec.pitfalls) ? rec.pitfalls : [],
+    toolCategories: Array.isArray(rec.toolCategories) ? rec.toolCategories : [],
+    estimatedEffort: rec.estimatedEffort || '',
+    estimatedCost: rec.estimatedCost || '',
+    totalScore: rec.totalScore || 0,
+    scores: rec.scores || {}
   };
 }
 
 /**
  * POST /api/export/program
- * Generates a customized Word document business program
+ * Generates a customized Word document security protection program
  *
  * Body:
  * {
  *   userAnalysis: {
  *     businessName: string,
- *     businessType: string,
- *     mainChallenge: string,
- *     techLevel: string,
- *     budget: string,
- *     timeline: string,
- *     teamSize: string
+ *     industry: string,
+ *     threatExposure: string,
+ *     currentControls: string,
+ *     securityBudget: string,
+ *     teamSize: string,
+ *     techMaturity: string,
+ *     diagnosis: { riskLevel, summary, keyFindings, industryContext },
+ *     threatModel: { topThreats, attackSurface },
+ *     roadmap: { days30, days60, days90 },
+ *     kpis: [{ metric, baseline, target30, target90 }],
+ *     incidentResponse: { title, steps, contacts }
  *   },
- *   recommendations: [{
- *     name: string,
- *     priority: string,
- *     description: string,
- *     benefits: string[] (or matchingFactors),
- *     setup: string (or setupTime),
- *     pricing: string,
- *     link: string (or website)
- *   }]
+ *   recommendations: [{ name, category, priority, description, why, steps, pitfalls, ... }]
  * }
  *
  * Returns: Word document download
@@ -78,7 +71,7 @@ router.post('/program', async (req, res) => {
     // Normalize recommendations to expected format
     const normalizedRecommendations = recommendations
       .map(normalizeRecommendation)
-      .filter(rec => rec && rec.name); // Filter out invalid entries
+      .filter(rec => rec && rec.name);
 
     if (normalizedRecommendations.length === 0) {
       return res.status(400).json({
@@ -98,7 +91,8 @@ router.post('/program', async (req, res) => {
     const buffer = await documentGenerator.getDocumentBuffer(doc);
 
     // Send as downloadable file
-    const fileName = `Business_Program_${userAnalysis.businessName || 'Program'}_${Date.now()}.docx`;
+    const safeName = safeFileName(userAnalysis.businessName);
+    const fileName = `Security_Protection_Program_${safeName}_${Date.now()}.docx`;
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
@@ -134,9 +128,9 @@ router.post('/summary', async (req, res) => {
 
     // Normalize recommendations to expected format
     const normalizedRecommendations = recommendations
-      .slice(0, 4) // Top 4 recommendations only
+      .slice(0, 4)
       .map(normalizeRecommendation)
-      .filter(rec => rec && rec.name); // Filter out invalid entries
+      .filter(rec => rec && rec.name);
 
     if (normalizedRecommendations.length === 0) {
       return res.status(400).json({
@@ -153,7 +147,8 @@ router.post('/summary', async (req, res) => {
     );
 
     const buffer = await documentGenerator.getDocumentBuffer(doc);
-    const fileName = `Business_Summary_${userAnalysis.businessName || 'Summary'}_${Date.now()}.docx`;
+    const safeName = safeFileName(userAnalysis.businessName);
+    const fileName = `Security_Summary_${safeName}_${Date.now()}.docx`;
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
@@ -182,8 +177,8 @@ router.get('/status', (req, res) => {
     success: true,
     message: 'Export service is operational',
     features: {
-      businessProgram: 'Full customized business transformation program (Word document)',
-      quickSummary: 'Quick summary with top recommendations',
+      securityProgram: 'Full customized anti-phishing protection program (Word document)',
+      quickSummary: 'Quick summary with top security controls',
       formats: ['DOCX']
     }
   });

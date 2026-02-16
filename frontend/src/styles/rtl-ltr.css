@@ -98,14 +98,7 @@
   padding-inline-start: 16px;
 }
 
-/* Button groups */
-.button-group {
-  justify-content: flex-end;
-}
-
-[lang="he"] .button-group {
-  justify-content: flex-start;
-}
+/* Button groups - handled in index.css */
 
 /* Progress bar and sections */
 .progress-section {
@@ -139,7 +132,7 @@
   padding-block-start: 20px;
   padding-block-end: 20px;
   padding-inline: 20px;
-  border-block-end: 2px solid rgba(217, 119, 6, 0.1);
+  border-block-end: 2px solid rgba(6, 182, 212, 0.1);
 }
 
 .timeline-card-content {
@@ -150,7 +143,7 @@
 .timeline-card-footer {
   padding-block: 16px;
   padding-inline: 20px;
-  border-block-start: 1px solid rgba(217, 119, 6, 0.1);
+  border-block-start: 1px solid rgba(6, 182, 212, 0.1);
 }
 
 /* Meta items with flexbox */
@@ -223,9 +216,6 @@ select {
   inset-inline-start: auto;
 }
 
-[lang="he"] .button-group {
-  flex-direction: row-reverse;
-}
 
 [lang="he"] .rec-header {
   flex-direction: row-reverse;
@@ -252,10 +242,6 @@ select {
   }
 
   .button-group {
-    flex-direction: column;
-  }
-
-  [lang="he"] .button-group {
     flex-direction: column;
   }
 

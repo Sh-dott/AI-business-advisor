@@ -2,10 +2,9 @@
 require('dotenv').config();
 
 // Required environment variables (for production)
-// Note: MONGODB_URI is optional (we use Word document export instead of database)
 const requiredEnvVars = [
   'JWT_SECRET',
-  'GITHUB_MODELS_API_KEY' // GitHub Models free API
+  'GROQ_API_KEY'
 ];
 
 // Check required environment variables
@@ -31,23 +30,11 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET || 'default-secret-key-change-in-production',
   JWT_EXPIRATION: '7d',
 
-  // GitHub Models API (Primary AI provider - FREE!)
-  GITHUB_MODELS_API_KEY: process.env.GITHUB_MODELS_API_KEY || 'sk-placeholder',
-  GITHUB_MODELS_API_URL: 'https://models.inference.ai.azure.com',
-  GITHUB_MODELS_MODEL: 'gpt-4o-mini', // Free model on GitHub
-  GITHUB_MODELS_MAX_TOKENS: 2048,
-
-  // Claude API (Optional - can use as fallback)
-  CLAUDE_API_KEY: process.env.CLAUDE_API_KEY || 'sk-placeholder',
-  CLAUDE_API_URL: 'https://api.anthropic.com/v1',
-  CLAUDE_MODEL: 'claude-3-5-sonnet-20241022',
-  CLAUDE_MAX_TOKENS: 2048,
-
-  // OpenAI API (Legacy - keeping for reference)
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY || 'sk-placeholder',
-  OPENAI_API_URL: 'https://api.openai.com/v1',
-  OPENAI_MODEL: 'gpt-4o-mini',
-  OPENAI_MAX_TOKENS: 2048,
+  // Groq API (Primary AI provider)
+  GROQ_API_KEY: process.env.GROQ_API_KEY,
+  GROQ_API_URL: 'https://api.groq.com/openai/v1',
+  GROQ_MODEL: 'llama-3.3-70b-versatile',
+  GROQ_MAX_TOKENS: 4000,
 
   // Streaming
   STREAM_CHUNK_SIZE: 1024,

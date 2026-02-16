@@ -1,7 +1,7 @@
 {
-  "name": "ai-business-advisor-backend",
+  "name": "ai-anti-phishing-advisor-backend",
   "version": "1.0.0",
-  "description": "Backend API for AI Business Advisor with Claude/OpenAI integration",
+  "description": "Backend API for AI Anti-Phishing Advisor with Groq AI integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
