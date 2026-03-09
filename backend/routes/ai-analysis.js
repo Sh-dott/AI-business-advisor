@@ -189,7 +189,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
     let usedProvider = 'unknown';
     const chatParams = {
       max_tokens: 8000,
-      temperature: 0.7,
+      temperature: 0.4,
       messages: [
         { role: 'system', content: SECURITY_SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
@@ -227,7 +227,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
       console.warn('AI response was truncated (finish_reason: length)');
     }
 
-    // Try to parse as JSON
+    // Try to parse as JSON with robust repair
     let analysisResult;
     try {
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -235,24 +235,54 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
         throw new Error('No JSON found in response');
       }
       let jsonStr = jsonMatch[0];
-      // If truncated, try to repair by closing open brackets
-      if (finishReason === 'length') {
-        const openBraces = (jsonStr.match(/\{/g) || []).length;
-        const closeBraces = (jsonStr.match(/\}/g) || []).length;
-        const openBrackets = (jsonStr.match(/\[/g) || []).length;
-        const closeBrackets = (jsonStr.match(/\]/g) || []).length;
-        // Close any unclosed strings, arrays, objects
-        if (jsonStr.endsWith('"')) jsonStr += '';
-        jsonStr += ']'.repeat(Math.max(0, openBrackets - closeBrackets));
-        jsonStr += '}'.repeat(Math.max(0, openBraces - closeBraces));
+
+      // Repair common JSON issues from smaller models
+      // Remove trailing commas before } or ]
+      jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1');
+      // Fix unescaped newlines in strings
+      jsonStr = jsonStr.replace(/(?<=":.*"[^"]*)\n([^"]*")/g, '\\n$1');
+      // Close unclosed brackets/braces
+      const openBraces = (jsonStr.match(/\{/g) || []).length;
+      const closeBraces = (jsonStr.match(/\}/g) || []).length;
+      const openBrackets = (jsonStr.match(/\[/g) || []).length;
+      const closeBrackets = (jsonStr.match(/\]/g) || []).length;
+      jsonStr += ']'.repeat(Math.max(0, openBrackets - closeBrackets));
+      jsonStr += '}'.repeat(Math.max(0, openBraces - closeBraces));
+
+      try {
+        analysisResult = JSON.parse(jsonStr);
+      } catch (firstErr) {
+        // More aggressive repair: remove control characters
+        jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, ' ');
+        jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1');
+        analysisResult = JSON.parse(jsonStr);
       }
-      analysisResult = JSON.parse(jsonStr);
     } catch (parseErr) {
       console.error('Failed to parse AI response:', responseText.substring(0, 500));
-      return res.status(500).json({
-        error: 'Failed to parse AI recommendations',
-        details: parseErr.message
-      });
+      // If OpenRouter failed to produce valid JSON, retry with Groq
+      if (usedProvider === 'openrouter') {
+        const gClient = getGroqClient();
+        if (gClient) {
+          console.log('Retrying with Groq due to JSON parse failure...');
+          message = await gClient.chat.completions.create({
+            model: 'llama-3.1-8b-instant',
+            ...chatParams
+          });
+          usedProvider = 'groq-retry';
+          const retryText = message.choices[0].message.content;
+          const retryMatch = retryText.match(/\{[\s\S]*\}/);
+          if (retryMatch) {
+            let retryJson = retryMatch[0].replace(/,\s*([}\]])/g, '$1');
+            analysisResult = JSON.parse(retryJson);
+          }
+        }
+      }
+      if (!analysisResult) {
+        return res.status(500).json({
+          error: 'Failed to parse AI recommendations',
+          details: parseErr.message
+        });
+      }
     }
 
     // Validate the response has required structure
