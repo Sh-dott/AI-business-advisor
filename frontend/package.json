@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "AI-powered anti-phishing and social engineering protection advisor for businesses",
-  "homepage": "https://Sh-dott.github.io/AI-Anti-Phishing-Advisor",
+  "homepage": "https://Sh-dott.github.io/AI-business-advisor",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
