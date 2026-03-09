@@ -30,11 +30,22 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET || 'default-secret-key-change-in-production',
   JWT_EXPIRATION: '7d',
 
-  // Groq API (Primary AI provider)
+  // Groq API (Primary AI provider - OpenAI-compatible endpoint)
   GROQ_API_KEY: process.env.GROQ_API_KEY,
   GROQ_API_URL: 'https://api.groq.com/openai/v1',
   GROQ_MODEL: 'llama-3.3-70b-versatile',
   GROQ_MAX_TOKENS: 4000,
+
+  // AI Provider aliases (mapped to Groq)
+  OPENAI_API_KEY: process.env.GROQ_API_KEY,
+  OPENAI_API_URL: 'https://api.groq.com/openai/v1',
+  OPENAI_MODEL: 'llama-3.3-70b-versatile',
+  OPENAI_MAX_TOKENS: 4000,
+
+  CLAUDE_API_KEY: process.env.GROQ_API_KEY,
+  CLAUDE_API_URL: 'https://api.groq.com/openai/v1',
+  CLAUDE_MODEL: 'llama-3.3-70b-versatile',
+  CLAUDE_MAX_TOKENS: 4000,
 
   // Streaming
   STREAM_CHUNK_SIZE: 1024,

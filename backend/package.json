@@ -12,7 +12,7 @@
     "test:api": "jest tests/api.test.js",
     "lint": "eslint .",
     "build": "echo 'Node.js backend - no build needed'",
-    "postinstall": "npm rebuild bcrypt --build-from-source 2>/dev/null || true"
+    "postinstall": "echo 'Backend ready'"
   },
   "keywords": [
     "ai",
@@ -35,7 +35,6 @@
     "mongoose": "^7.5.0",
     "openai": "^6.9.1",
     "pdf-lib": "^1.17.1",
-    "sharp": "^0.34.5",
     "validator": "^13.11.0"
   },
   "devDependencies": {
