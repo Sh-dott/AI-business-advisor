@@ -2,16 +2,28 @@ const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
 
-// Lazy-initialize Groq client (OpenAI SDK compatible)
-let openai;
-function getClient() {
-  if (!openai) {
-    openai = new OpenAI({
-      apiKey: process.env.GROQ_API_KEY || 'missing-key',
+// Lazy-initialize clients: OpenRouter primary, Groq fallback
+let openrouterClient;
+let groqClient;
+
+function getOpenRouterClient() {
+  if (!openrouterClient && process.env.OPENROUTER_API_KEY) {
+    openrouterClient = new OpenAI({
+      apiKey: process.env.OPENROUTER_API_KEY,
+      baseURL: 'https://openrouter.ai/api/v1'
+    });
+  }
+  return openrouterClient;
+}
+
+function getGroqClient() {
+  if (!groqClient && process.env.GROQ_API_KEY) {
+    groqClient = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
       baseURL: 'https://api.groq.com/openai/v1'
     });
   }
-  return openai;
+  return groqClient;
 }
 
 // Rate limiter: 1 request per IP every 20 seconds
@@ -115,12 +127,12 @@ RULES:
  */
 router.post('/recommend', rateLimiter, async (req, res) => {
   try {
-    // Validate API key is present
-    if (!process.env.GROQ_API_KEY) {
+    // Validate at least one API key is present
+    if (!process.env.OPENROUTER_API_KEY && !process.env.GROQ_API_KEY) {
       return res.status(500).json({
         error: 'AI API not configured',
-        message: 'GROQ_API_KEY environment variable is missing',
-        details: 'Please configure Groq API key on the server'
+        message: 'No AI provider API key configured',
+        details: 'Please configure OPENROUTER_API_KEY or GROQ_API_KEY'
       });
     }
 
@@ -172,16 +184,40 @@ TASK: Return ONLY valid JSON (no markdown, no commentary). Keep all text CONCISE
 
 Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCISE but SPECIFIC - name real products, vendors, and exact steps. No generic advice.`;
 
-    // Call Groq API
-    const message = await getClient().chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+    // Call AI API: OpenRouter primary, Groq fallback
+    let message;
+    let usedProvider = 'unknown';
+    const chatParams = {
       max_tokens: 8000,
       temperature: 0.7,
       messages: [
         { role: 'system', content: SECURITY_SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
       ]
-    });
+    };
+
+    const orClient = getOpenRouterClient();
+    if (orClient) {
+      try {
+        message = await orClient.chat.completions.create({
+          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          ...chatParams
+        });
+        usedProvider = 'openrouter';
+      } catch (primaryErr) {
+        console.warn('OpenRouter failed, trying Groq fallback:', primaryErr.message);
+      }
+    }
+
+    if (!message) {
+      const gClient = getGroqClient();
+      if (!gClient) throw new Error('No AI provider available');
+      message = await gClient.chat.completions.create({
+        model: 'llama-3.1-8b-instant',
+        ...chatParams
+      });
+      usedProvider = 'groq';
+    }
 
     // Extract the response text
     const responseText = message.choices[0].message.content;
@@ -251,7 +287,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
       kpis: Array.isArray(analysisResult.kpis) ? analysisResult.kpis : [],
       incidentResponse: analysisResult.incidentResponse || { title: '', steps: [], contacts: '' },
       analysis: String(analysisResult.analysis || 'Security analysis completed').trim(),
-      source: 'groq'
+      source: usedProvider
     });
 
   } catch (error) {
