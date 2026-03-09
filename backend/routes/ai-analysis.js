@@ -2,11 +2,17 @@ const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
 
-// Initialize Groq client (OpenAI SDK compatible)
-const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: 'https://api.groq.com/openai/v1'
-});
+// Lazy-initialize Groq client (OpenAI SDK compatible)
+let openai;
+function getClient() {
+  if (!openai) {
+    openai = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY || 'missing-key',
+      baseURL: 'https://api.groq.com/openai/v1'
+    });
+  }
+  return openai;
+}
 
 // Rate limiter: 1 request per IP every 20 seconds
 const rateLimitMap = new Map();
@@ -167,7 +173,7 @@ TASK: Return ONLY valid JSON (no markdown, no commentary). Keep all text CONCISE
 Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCISE but SPECIFIC - name real products, vendors, and exact steps. No generic advice.`;
 
     // Call Groq API
-    const message = await openai.chat.completions.create({
+    const message = await getClient().chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       max_tokens: 8000,
       temperature: 0.7,
