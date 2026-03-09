@@ -33,18 +33,18 @@ module.exports = {
   // Groq API (Primary AI provider - OpenAI-compatible endpoint)
   GROQ_API_KEY: process.env.GROQ_API_KEY,
   GROQ_API_URL: 'https://api.groq.com/openai/v1',
-  GROQ_MODEL: 'llama-3.3-70b-versatile',
+  GROQ_MODEL: 'llama-3.1-8b-instant',
   GROQ_MAX_TOKENS: 4000,
 
   // AI Provider aliases (mapped to Groq)
   OPENAI_API_KEY: process.env.GROQ_API_KEY,
   OPENAI_API_URL: 'https://api.groq.com/openai/v1',
-  OPENAI_MODEL: 'llama-3.3-70b-versatile',
+  OPENAI_MODEL: 'llama-3.1-8b-instant',
   OPENAI_MAX_TOKENS: 4000,
 
   CLAUDE_API_KEY: process.env.GROQ_API_KEY,
   CLAUDE_API_URL: 'https://api.groq.com/openai/v1',
-  CLAUDE_MODEL: 'llama-3.3-70b-versatile',
+  CLAUDE_MODEL: 'llama-3.1-8b-instant',
   CLAUDE_MAX_TOKENS: 4000,
 
   // Streaming

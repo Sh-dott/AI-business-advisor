@@ -174,7 +174,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
 
     // Call Groq API
     const message = await getClient().chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: 'llama-3.1-8b-instant',
       max_tokens: 8000,
       temperature: 0.7,
       messages: [
