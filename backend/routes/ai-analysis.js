@@ -190,6 +190,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
     const chatParams = {
       max_tokens: 8000,
       temperature: 0.4,
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: SECURITY_SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
@@ -200,7 +201,7 @@ Return exactly 4 recommendations, one per category. Scores are 0.0-1.0. Be CONCI
     if (orClient) {
       try {
         message = await orClient.chat.completions.create({
-          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          model: 'nvidia/nemotron-3-nano-30b-a3b:free',
           ...chatParams
         });
         usedProvider = 'openrouter';

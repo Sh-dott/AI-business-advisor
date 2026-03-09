@@ -32,7 +32,7 @@ module.exports = {
   // OpenRouter (Primary AI provider)
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   OPENROUTER_API_URL: 'https://openrouter.ai/api/v1',
-  OPENROUTER_MODEL: 'meta-llama/llama-3.1-8b-instruct:free',
+  OPENROUTER_MODEL: 'nvidia/nemotron-3-nano-30b-a3b:free',
   OPENROUTER_MAX_TOKENS: 4000,
 
   // Groq API (Fallback AI provider)
