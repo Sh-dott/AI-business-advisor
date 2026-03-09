@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["diagnosis", "threatModel", "recommendations", "roadmap", "kpis", "incidentResponse", "analysis"],
+  "properties": {
+    "diagnosis": {
+      "type": "object",
+      "required": ["riskLevel", "summary", "keyFindings", "industryContext"],
+      "properties": {
+        "riskLevel": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+        "summary": { "type": "string", "minLength": 20 },
+        "keyFindings": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 5 },
+        "industryContext": { "type": "string" }
+      }
+    },
+    "threatModel": {
+      "type": "object",
+      "required": ["topThreats", "attackSurface"],
+      "properties": {
+        "topThreats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "likelihood", "impact", "description"],
+            "properties": {
+              "name": { "type": "string" },
+              "likelihood": { "type": "string", "enum": ["high", "medium", "low"] },
+              "impact": { "type": "string", "enum": ["high", "medium", "low"] },
+              "description": { "type": "string" }
+            }
+          },
+          "minItems": 2,
+          "maxItems": 6
+        },
+        "attackSurface": { "type": "string" }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "priority", "description", "why", "steps"],
+        "properties": {
+          "name": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": ["email_security", "identity_access", "awareness_training", "process_ir"]
+          },
+          "priority": { "type": "string", "enum": ["Critical", "High", "Medium"] },
+          "description": { "type": "string" },
+          "why": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+          "pitfalls": { "type": "array", "items": { "type": "string" } },
+          "toolCategories": { "type": "array", "items": { "type": "string" } },
+          "estimatedEffort": { "type": "string" },
+          "estimatedCost": { "type": "string" },
+          "scores": {
+            "type": "object",
+            "properties": {
+              "threatMatch": { "type": "number", "minimum": 0, "maximum": 1 },
+              "gapSeverity": { "type": "number", "minimum": 0, "maximum": 1 },
+              "industryFit": { "type": "number", "minimum": 0, "maximum": 1 },
+              "budgetFit": { "type": "number", "minimum": 0, "maximum": 1 },
+              "teamFit": { "type": "number", "minimum": 0, "maximum": 1 },
+              "simplicity": { "type": "number", "minimum": 0, "maximum": 1 },
+              "timeToValue": { "type": "number", "minimum": 0, "maximum": 1 },
+              "regulatoryFit": { "type": "number", "minimum": 0, "maximum": 1 },
+              "attackSurfaceReduction": { "type": "number", "minimum": 0, "maximum": 1 },
+              "forceMultiplier": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "roadmap": {
+      "type": "object",
+      "required": ["days30", "days60", "days90"],
+      "properties": {
+        "days30": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+        "days60": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+        "days90": { "type": "array", "items": { "type": "string" }, "minItems": 2 }
+      }
+    },
+    "kpis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["metric", "baseline", "target30", "target90"],
+        "properties": {
+          "metric": { "type": "string" },
+          "baseline": { "type": "string" },
+          "target30": { "type": "string" },
+          "target90": { "type": "string" }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 8
+    },
+    "incidentResponse": {
+      "type": "object",
+      "required": ["title", "steps", "contacts"],
+      "properties": {
+        "title": { "type": "string" },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["timeframe", "actions"],
+            "properties": {
+              "timeframe": { "type": "string" },
+              "actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+            }
+          },
+          "minItems": 3
+        },
+        "contacts": { "type": "string" }
+      }
+    },
+    "analysis": { "type": "string", "minLength": 20 }
+  }
+}
