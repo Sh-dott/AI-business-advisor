@@ -65,7 +65,7 @@ You can't yet:
    ```
    NODE_ENV=production
    PORT=5000
-   OPENAI_API_KEY=sk-proj-9dpQy-...
+   OPENAI_API_KEY=your-openai-api-key-here
    JWT_SECRET=your-secure-string
    FRONTEND_URL=https://sh-dott.github.io/AI-business-advisor
    ```

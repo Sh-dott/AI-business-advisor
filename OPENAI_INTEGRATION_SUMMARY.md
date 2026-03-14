@@ -6,7 +6,7 @@ Your OpenAI API key has been integrated into the system and configured as follow
 
 ### Configuration Details
 ```
-API Key: ✅ Configured (sk-proj-9dpQy-...)
+API Key: ✅ Configured (set via environment variable)
 Model: gpt-4o-mini (cost-effective, widely available)
 Status: Ready to use (with automatic fallback)
 Max Tokens: 2048
@@ -213,7 +213,7 @@ Just deploy! Your system will:
 
 In your environment variables, add:
 ```
-OPENAI_API_KEY=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
+OPENAI_API_KEY=your-openai-api-key-here
 ```
 
 **Or** leave it as placeholder if you don't want OpenAI:

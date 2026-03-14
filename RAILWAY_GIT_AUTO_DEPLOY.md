@@ -34,8 +34,8 @@ Add these 5 variables:
 ```
 NODE_ENV=production
 PORT=5000
-OPENAI_API_KEY=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
-JWT_SECRET=your-super-secret-jwt-key-change-this-12345678
+OPENAI_API_KEY=your-openai-api-key-here
+JWT_SECRET=your-jwt-secret-here
 FRONTEND_URL=https://sh-dott.github.io/AI-business-advisor
 ```
 
